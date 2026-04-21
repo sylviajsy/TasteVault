@@ -13,11 +13,9 @@ if (!connectionString) {
   );
 }
 
-const isSslDisabled = process.env.PGSSLMODE === 'disable';
-
-const pool = new Pool({
-  connectionString,
-  ssl: isSslDisabled ? false : { rejectUnauthorized: false },
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 
 export const query = (text, params) => pool.query(text, params);
