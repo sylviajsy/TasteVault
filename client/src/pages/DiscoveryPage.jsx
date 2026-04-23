@@ -1,6 +1,6 @@
 import React from 'react'
 
-function DiscoveryPage () {
+export const DiscoveryPage = () => {
   return (
     <div>
         <h1>Discovery Page</h1>
@@ -9,4 +9,3 @@ function DiscoveryPage () {
   )
 }
 
-export default DiscoveryPage;
