@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import pool from '../db/connection.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 import userRouter from '../router/user.js';
 import winesRouter from '../router/wines.js';
 
@@ -10,7 +11,7 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/user', userRouter);
+app.use('/api/user',authMiddleware, userRouter);
 app.use('/api/wines', winesRouter);
 
 app.get('/health', async (_req, res) => {
