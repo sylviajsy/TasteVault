@@ -4,32 +4,35 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {DiscoveryPage} from "./pages/DiscoveryPage";
 import {JournalPage} from "./pages/JournalPage";
+import { UserContext } from './context/UserContext.jsx';
 
 function App() {
 
   return (
-    <Router>
-      <ToastContainer position="top-center"
-            autoClose={3000}
-            toastStyle={{
-              marginTop: "40vh",
-              textAlign: "center"
-            }} />
+    <UserContext>
+      <Router>
+        <ToastContainer position="top-center"
+              autoClose={3000}
+              toastStyle={{
+                marginTop: "40vh",
+                textAlign: "center"
+              }} />
 
-      {/* NavBar */}
-      <nav >
-        <Link to="/" >Discovery</Link>
-        <Link to="/journal">Journal</Link>
-      </nav>
+        {/* NavBar */}
+        <nav >
+          <Link to="/" >Discovery</Link>
+          <Link to="/journal">Journal</Link>
+        </nav>
 
-      <Routes>
-        <Route path="/" element={<DiscoveryPage />} />
-        <Route path="/journal" element={<JournalPage />} />
-        
-        {/* Error handling */}
-        <Route path="*" element={<div>404 Not Found</div>} />
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/" element={<DiscoveryPage />} />
+          <Route path="/journal" element={<JournalPage />} />
+          
+          {/* Error handling */}
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </Router>
+    </UserContext>
   )
 }
 
