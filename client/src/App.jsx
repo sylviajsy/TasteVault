@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {DiscoveryPage} from "./pages/DiscoveryPage";
 import {JournalPage} from "./pages/JournalPage";
-import { UserContext } from './context/UserContext.jsx';
+import { UserContext } from './store/UserContext.js';
 
 function App() {
 
