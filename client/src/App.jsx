@@ -59,7 +59,7 @@ function App() {
 
       <Navbar />
 
-      <main className="app-shell">
+      <main className="pt-28 md:pt-24">
         <Routes>
           <Route path="/" element={<DiscoveryPage />} />
           <Route path="/journal" element={<JournalPage />} />
