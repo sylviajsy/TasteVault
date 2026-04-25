@@ -1,10 +1,11 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {DiscoveryPage} from "./pages/DiscoveryPage";
-import {JournalPage} from "./pages/JournalPage";
+import { DiscoveryPage } from "./pages/DiscoveryPage";
+import { JournalPage } from "./pages/JournalPage";
 import { useEffect } from 'react';
+import Navbar from './components/Navbar.jsx';
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentUser,
@@ -56,11 +57,7 @@ function App() {
               textAlign: "center"
             }} />
 
-      {/* NavBar */}
-      <nav >
-        <Link to="/" >Discovery</Link>
-        <Link to="/journal">Journal</Link>
-      </nav>
+      <Navbar />
 
       <Routes>
         <Route path="/" element={<DiscoveryPage />} />
