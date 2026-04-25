@@ -26,7 +26,13 @@ function Navbar() {
 
             {isOpen && (
               <div className="absolute left-0 top-full mt-2 w-44 rounded-2xl border border-[#dcc4ba] bg-[#fff8ef] p-2 text-left shadow-[0_16px_34px_rgba(96,17,40,0.16)]">
-                
+                <Link
+                  to="/"
+                  className="block rounded-xl px-4 py-3 text-sm font-medium text-[#5b1228] transition hover:bg-[#f2e2d6]"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Discovery Page
+                </Link>
                 <Link
                   to="/journal"
                   className="block rounded-xl px-4 py-3 text-sm font-medium text-[#5b1228] transition hover:bg-[#f2e2d6]"
