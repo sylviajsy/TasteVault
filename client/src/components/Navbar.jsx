@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+import { selectDisplayName } from "../store/userSlice";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const displayName = useSelector(selectDisplayName);
 
   return (
     <nav className="top-nav">
