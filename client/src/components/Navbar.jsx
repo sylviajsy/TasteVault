@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const name = useSelector((state) => state.user.currentUser?.user_name);
 
   return (
     <nav className="top-nav">
@@ -42,7 +41,7 @@ function Navbar() {
         </Link>
       </div>
 
-      <div className="top-nav__right">Hi, {name}</div>
+      <div className="top-nav__right">Hi, {displayName}</div>
     </nav>
   );
 }
