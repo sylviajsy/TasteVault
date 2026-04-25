@@ -59,13 +59,15 @@ function App() {
 
       <Navbar />
 
-      <Routes>
-        <Route path="/" element={<DiscoveryPage />} />
-        <Route path="/journal" element={<JournalPage />} />
-        
-        {/* Error handling */}
-        <Route path="*" element={<div>404 Not Found</div>} />
-      </Routes>
+      <main className="app-shell">
+        <Routes>
+          <Route path="/" element={<DiscoveryPage />} />
+          <Route path="/journal" element={<JournalPage />} />
+          
+          {/* Error handling */}
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </main>
     </Router>
   )
 }
