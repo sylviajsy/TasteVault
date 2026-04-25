@@ -9,8 +9,8 @@ function Navbar() {
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#d3b8ad] bg-[#f8f1e7]/95 shadow-[0_10px_30px_rgba(96,17,40,0.12)] backdrop-blur">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-3 px-4 py-4 text-center md:grid-cols-[1fr_auto_1fr] md:gap-4 md:px-6">
-        <div className="justify-self-center md:justify-self-start">
+      <div className="mx-auto grid max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-4 text-center md:gap-4 md:px-6">
+        <div className="justify-self-start">
           <div
             className="relative inline-block"
             onMouseEnter={() => setIsOpen(true)}
@@ -25,7 +25,7 @@ function Navbar() {
             </button>
 
             {isOpen && (
-              <div className="absolute left-1/2 top-full mt-2 w-44 -translate-x-1/2 rounded-2xl border border-[#dcc4ba] bg-[#fff8ef] p-2 text-left shadow-[0_16px_34px_rgba(96,17,40,0.16)] md:left-0 md:translate-x-0">
+              <div className="absolute left-0 top-full mt-2 w-44 rounded-2xl border border-[#dcc4ba] bg-[#fff8ef] p-2 text-left shadow-[0_16px_34px_rgba(96,17,40,0.16)]">
                 
                 <Link
                   to="/journal"
@@ -42,13 +42,13 @@ function Navbar() {
         <div className="justify-self-center">
           <Link
             to="/"
-            className="text-2xl font-bold tracking-[0.18em] text-[#6f102e] no-underline"
+            className="text-xl font-bold tracking-[0.18em] text-[#6f102e] no-underline md:text-2xl"
           >
-            Taste Vault
+            TasteVault
           </Link>
         </div>
 
-        <div className="justify-self-center text-sm font-semibold text-[#6f102e] md:justify-self-end">
+        <div className="justify-self-end text-sm font-semibold text-[#6f102e]">
           Hi, {displayName}
         </div>
       </div>
