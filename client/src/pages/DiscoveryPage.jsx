@@ -34,20 +34,21 @@ export const DiscoveryPage = () => {
     },[])
 
   return (
-    <div>
+    <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
         {loading && (
           <p className="mb-4 text-[#6f102e]">
             Loading wines...
           </p>
         )}
-        {wines.map((wine) => (
-            <WineCard 
-                key={wine.wine_id}
-                wine={wine}
-            />
-        ))}
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {wines.map((wine) => (
+              <WineCard 
+                  key={wine.wine_id}
+                  wine={wine}
+              />
+          ))}
+        </div>
     </div>
   )
 }
-
