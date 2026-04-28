@@ -36,7 +36,7 @@ export const DiscoveryPage = () => {
     <div>
         <h1>Discovery Page</h1>
         {loading && (
-          <p>
+          <p className="mb-4 text-[#6f102e]">
             Loading wines...
           </p>
         )}
