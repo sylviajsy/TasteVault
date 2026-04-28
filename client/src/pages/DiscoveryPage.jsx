@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
+import { WineCard } from '../components/WineCard';
 
 export const DiscoveryPage = () => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -41,11 +42,10 @@ export const DiscoveryPage = () => {
           </p>
         )}
         {wines.map((wine) => (
-            <div key={wine.wine_id}>
-            <h3>{wine.name}</h3>
-            <p>{wine.winery}</p>
-            <p>{wine.region_display}</p>
-            </div>
+            <WineCard 
+                key={wine.wine_id}
+                wine={wine}
+            />
         ))}
     </div>
   )
