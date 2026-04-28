@@ -16,6 +16,7 @@ create table if not exists wines (
   winery text,
   year integer,
   region_display text,
+  image_url text,
 
   acidity numeric,
   fizziness numeric,
