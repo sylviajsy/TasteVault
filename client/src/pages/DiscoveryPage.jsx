@@ -5,9 +5,12 @@ export const DiscoveryPage = () => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [wines, setWines] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const loadWines = async () => {
         try {
+            setLoading(true);
+
             const res = await fetch(`${API_URL}/api/wines`);
             const data = await res.json();
 
@@ -20,7 +23,9 @@ export const DiscoveryPage = () => {
         } catch (error) {
             console.error(error);
             toast.error(error.message);
-        }  
+        }  finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -30,6 +35,11 @@ export const DiscoveryPage = () => {
   return (
     <div>
         <h1>Discovery Page</h1>
+        {loading && (
+          <p>
+            Loading wines...
+          </p>
+        )}
         {wines.map((wine) => (
             <div key={wine.wine_id}>
             <h3>{wine.name}</h3>
