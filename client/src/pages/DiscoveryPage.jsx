@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import { WineCard } from '../components/WineCard';
+import { WineDetailModal } from '../components/WineDetailModal';
 
 export const DiscoveryPage = () => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -38,6 +39,10 @@ export const DiscoveryPage = () => {
         setSelectedWine(wine);
     }
 
+    const handleCloseModal = () => {
+        setSelectedWine(null);
+    };
+
   return (
     <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
@@ -54,6 +59,14 @@ export const DiscoveryPage = () => {
                   onSelect={handleSelectedWine}
               />
           ))}
+        </div>
+        <div>
+            {selectedWine && (
+                <WineDetailModal 
+                    wine={selectedWine}
+                    onClose={handleCloseModal}
+                />
+            )}
         </div>
     </div>
   )
