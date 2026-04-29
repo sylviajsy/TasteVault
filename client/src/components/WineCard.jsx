@@ -1,12 +1,12 @@
 export const WineCard = ({ wine }) => {
   return (
     <article className="overflow-hidden rounded-3xl border border-[#dcc4ba] bg-[#fff8ef] text-left shadow-[0_16px_36px_rgba(96,17,40,0.10)] transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(96,17,40,0.16)]">
-      <div className="flex h-48 items-center justify-center bg-gradient-to-br from-[#f8e6da] to-[#f2d4ca]">
+      <div className="flex h-80 items-center justify-center bg-gradient-to-br from-[#f8e6da] to-[#f2d4ca] p-6">
         {wine.image_url ? (
           <img
             src={wine.image_url}
             alt={wine.name}
-            className="h-full w-full object-cover"
+            className="max-h-60 object-contain"
           />
         ) : (
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8f5a4c]">
