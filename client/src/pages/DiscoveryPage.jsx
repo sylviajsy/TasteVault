@@ -7,6 +7,7 @@ export const DiscoveryPage = () => {
 
     const [wines, setWines] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [selectedWine, setSelectedWine] = useState(null);
 
     const loadWines = async () => {
         try {
@@ -33,6 +34,10 @@ export const DiscoveryPage = () => {
         loadWines();
     },[])
 
+    const handleSelectedWine = (wine) => {
+        setSelectedWine(wine);
+    }
+
   return (
     <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
@@ -46,6 +51,7 @@ export const DiscoveryPage = () => {
               <WineCard 
                   key={wine.wine_id}
                   wine={wine}
+                  onSelect={handleSelectedWine}
               />
           ))}
         </div>

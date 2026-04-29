@@ -1,6 +1,12 @@
-export const WineCard = ({ wine }) => {
+export const WineCard = ({ wine, onSelect }) => {
+
+    const handleClick = () => {
+        onSelect(wine);
+        console.log("wine selected",wine);
+    };
+
   return (
-    <article className="overflow-hidden rounded-3xl border border-[#dcc4ba] bg-[#fff8ef] text-left shadow-[0_16px_36px_rgba(96,17,40,0.10)] transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(96,17,40,0.16)]">
+    <article onClick={handleClick} className="overflow-hidden rounded-3xl border border-[#dcc4ba] bg-[#fff8ef] text-left shadow-[0_16px_36px_rgba(96,17,40,0.10)] transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(96,17,40,0.16)]">
       <div className="flex h-80 items-center justify-center bg-gradient-to-br from-[#f8e6da] to-[#f2d4ca] p-6">
         {wine.image_url ? (
           <img
