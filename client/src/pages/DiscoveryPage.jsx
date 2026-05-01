@@ -34,8 +34,8 @@ export const DiscoveryPage = () => {
     }
 
     useEffect(() => {
-        loadWines();
-    },[])
+        loadWines(query);
+    },[query])
 
     const handleSelectedWine = (wine) => {
         setSelectedWine(wine);
