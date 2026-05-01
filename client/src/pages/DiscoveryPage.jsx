@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import { WineCard } from '../components/WineCard';
 import { WineDetailModal } from '../components/WineDetailModal';
+import { GlobalSearchBar } from '../components/GlobalSearchBar';
 
 export const DiscoveryPage = () => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -9,12 +10,13 @@ export const DiscoveryPage = () => {
     const [wines, setWines] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedWine, setSelectedWine] = useState(null);
+    const [query, setQuery] = useState("");
 
-    const loadWines = async () => {
+    const loadWines = async (search = "") => {
         try {
             setLoading(true);
 
-            const res = await fetch(`${API_URL}/api/wines`);
+            const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(search)}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -42,6 +44,8 @@ export const DiscoveryPage = () => {
     const handleCloseModal = () => {
         setSelectedWine(null);
     };
+
+    const onSearch = 
 
   return (
     <div className="px-4 pb-10 md:px-6">
