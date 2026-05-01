@@ -1,0 +1,11 @@
+import React from 'react'
+
+export const DiscoveryPage = () => {
+  return (
+    <div>
+        <h1>Discovery Page</h1>
+        <p>Search wines here.</p>
+    </div>
+  )
+}
+
