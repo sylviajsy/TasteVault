@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
         SELECT * FROM wines
         WHERE name ILIKE $1
            OR winery ILIKE $1
-           OR region ILIKE $1
+           OR region_display ILIKE $1
         `,
         [`%${search}%`]
       );
