@@ -3,9 +3,26 @@ import pool from '../db/connection.js';
 
 const router = express.Router();
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
+
+  const { search } = req.query;
+
   try {
-    const result = await pool.query('SELECT * FROM wines ORDER BY wine_id');
+    let result;
+
+    if (search) {
+      result = await pool.query(
+        `
+        SELECT * FROM wines
+        WHERE name ILIKE $1
+           OR winery ILIKE $1
+           OR region_display ILIKE $1
+        `,
+        [`%${search}%`]
+      );
+    } else {
+      result = await pool.query('SELECT * FROM wines ORDER BY wine_id');
+    }
     res.status(200).json(result.rows);
   } catch (error) {
     console.error("GET /api/wines failed:", error);

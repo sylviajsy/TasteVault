@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import { WineCard } from '../components/WineCard';
 import { WineDetailModal } from '../components/WineDetailModal';
+import { GlobalSearchBar } from '../components/GlobalSearchBar';
 
 export const DiscoveryPage = () => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -9,12 +10,13 @@ export const DiscoveryPage = () => {
     const [wines, setWines] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedWine, setSelectedWine] = useState(null);
+    const [query, setQuery] = useState("");
 
-    const loadWines = async () => {
+    const loadWines = async (search = "") => {
         try {
             setLoading(true);
 
-            const res = await fetch(`${API_URL}/api/wines`);
+            const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(search)}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -32,8 +34,8 @@ export const DiscoveryPage = () => {
     }
 
     useEffect(() => {
-        loadWines();
-    },[])
+        loadWines(query);
+    },[query])
 
     const handleSelectedWine = (wine) => {
         setSelectedWine(wine);
@@ -41,6 +43,11 @@ export const DiscoveryPage = () => {
 
     const handleCloseModal = () => {
         setSelectedWine(null);
+    };
+
+    const onSearch = (value) => {
+        setQuery(value);
+        loadWines(value);
     };
 
   return (
@@ -51,6 +58,7 @@ export const DiscoveryPage = () => {
             Loading wines...
           </p>
         )}
+        <GlobalSearchBar onSearch={onSearch}/>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 

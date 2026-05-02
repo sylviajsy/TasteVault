@@ -1,3 +1,4 @@
+@import "tailwindcss";
 :root {
   --text: #6b4b4b;
   --text-h: #4a1023;
@@ -91,4 +92,4 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
-@import "tailwindcss";
+
