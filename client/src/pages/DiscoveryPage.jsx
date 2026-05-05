@@ -54,7 +54,7 @@ export const DiscoveryPage = () => {
     <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
         {loading && (
-          <p className="mb-4 text-[#6f102e]">
+          <p className="mb-4 text-wine-burgundy">
             Loading wines...
           </p>
         )}
