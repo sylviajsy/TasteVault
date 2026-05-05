@@ -14,7 +14,7 @@ app.use(express.json());
 app.use('/api/user',authMiddleware, userRouter);
 app.use('/api/wines', winesRouter);
 
-app.get('/health', async (_req, res) => {
+app.get('/', async (_req, res) => {
   try {
     await pool.query('SELECT 1');
 
