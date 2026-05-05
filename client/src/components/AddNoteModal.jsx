@@ -32,11 +32,20 @@ export const AddNoteModal = ({ onClose }) => {
   return (
     <div onClick={onClose}>
         <div onClick={(e) => e.stopPropagation()}>
-            <GlobalSearchBar onSearch={handleWineSearch} />
+            <div>
+                <h2>Add Tasting Note</h2>
+            </div>
+            <button
+                onClick={onClose}
+                className="rounded-full px-3 py-1 text-xl text-[#5b1228] hover:bg-[#f2e2d6]"
+            >
+                ✕
+            </button>
+        </div>
+        <GlobalSearchBar onSearch={handleWineSearch} />
             {loading && (
                 <p>Searching wines...</p>
             )}
-        </div>
     </div>
   )
 }
