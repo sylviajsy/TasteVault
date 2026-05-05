@@ -1,7 +1,4 @@
 export const WineDetailModal = ({ wine, onClose }) => {
-  const imageSrc = wine.image_url?.startsWith('//')
-    ? `https:${wine.image_url}`
-    : wine.image_url;
 
   return (
     <div
@@ -22,9 +19,9 @@ export const WineDetailModal = ({ wine, onClose }) => {
 
         <div className="grid gap-0 md:grid-cols-[minmax(280px,360px)_1fr]">
           <div className="flex min-h-[420px] items-center justify-center bg-gradient-to-br from-wine-blush to-wine-rose p-6">
-            {imageSrc ? (
+            {wine.image_url ? (
               <img
-                src={imageSrc}
+                src={wine.image_url}
                 alt={wine.name}
                 className="max-h-[380px] w-auto max-w-full object-contain"
               />
@@ -38,44 +35,43 @@ export const WineDetailModal = ({ wine, onClose }) => {
           <div className="space-y-6 p-6 md:p-8">
             <div className="space-y-2 border-b border-wine-divider pb-5">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wine-label">
-                {wine.region_display || 'Region unavailable'}
+                {wine.region || 'Region unavailable'}
               </p>
               <h2 className="text-3xl font-semibold text-wine-text">
                 {wine.name}
               </h2>
               <p className="text-base text-wine-text-soft">
-                {wine.winery || 'Unknown winery'}
-                {wine.year ? ` • ${wine.year}` : ''}
+                {wine.winery}
               </p>
               <p className="text-lg font-semibold text-wine-burgundy">
-                {wine.price ? `$${wine.price}` : 'N/A'}
+                {wine.price}
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Region</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.region_display || 'N/A'}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.region}</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Vintage</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.year || 'N/A'}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.year}</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Acidity</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.acidity ?? 'N/A'}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.acidity}</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Tannin</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.tannin ?? 'N/A'}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.tannin}</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Intensity</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.intensity ?? 'N/A'}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.intensity}</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Sweetness</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.sweetness ?? 'N/A'}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.sweetness}</p>
               </div>
             </div>
 
@@ -84,7 +80,7 @@ export const WineDetailModal = ({ wine, onClose }) => {
                 Grapes
               </p>
               <div className="flex flex-wrap gap-2">
-                {(wine.grapes || []).map((grape) => (
+                {wine.grapes.map((grape) => (
                   <span
                     key={grape}
                     className="rounded-full border border-wine-border bg-wine-chip px-3 py-1 text-xs font-medium text-wine-burgundy"

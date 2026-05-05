@@ -24,14 +24,14 @@ export const WineCard = ({ wine, onSelect }) => {
       <div className="space-y-4 p-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wine-label">
-            {wine.region_display || 'Region unavailable'}
+            {wine.region}
           </p>
           <h3 className="mt-2 text-xl font-semibold text-wine-text">
             {wine.name}
           </h3>
           <p className="mt-1 text-sm text-wine-text-soft">
-            {wine.winery || 'Unknown winery'}
-            {wine.year ? ` • ${wine.year}` : ''}
+            {wine.winery}
+            {wine.year}
           </p>
         </div>
 
@@ -39,13 +39,13 @@ export const WineCard = ({ wine, onSelect }) => {
           <div className="rounded-2xl bg-wine-panel px-3 py-2">
             <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Price</p>
             <p className="mt-1 font-semibold text-wine-text">
-              {wine.price ? `$${wine.price}` : 'N/A'}
+              {wine.price}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {(wine.grapes || []).slice(0, 3).map((grape) => (
+          {wine.grapes.slice(0, 3).map((grape) => (
             <span
               key={grape}
               className="rounded-full border border-wine-border bg-wine-chip px-3 py-1 text-xs font-medium text-wine-burgundy"
