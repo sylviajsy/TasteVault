@@ -7,7 +7,7 @@ export const AddNoteModal = ({ onClose }) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [loading, setLoading] = useState(false);
-    const [WinesResults, setWinesResults] = useState([]);
+    const [winesResults, setWinesResults] = useState([]);
     const [selectedWine, setSelectedWine] = useState([]);
 
     const handleWineSearch = async (searchTerm) => {
@@ -46,36 +46,39 @@ export const AddNoteModal = ({ onClose }) => {
             >
                 ✕
             </button>
-            {selectedWine && (
-                <h2>Wine: {selectedWine.name}</h2>
-            )}
-            <GlobalSearchBar onSearch={handleWineSearch} />
-                {loading && (
-                    <p>Searching wines...</p>
+            <div>
+                <span>Wine:</span>
+                {selectedWine && (
+                    <span>{selectedWine.name}</span>
                 )}
+                <GlobalSearchBar onSearch={handleWineSearch} />
+                    {loading && (
+                        <p>Searching wines...</p>
+                    )}
 
-                {WinesResults.length > 0 && (
-                    <div>
-                        {WinesResults.map((wine)=>{
-                            return (
-                                <button
-                                    key={wine.wine_id}
-                                    type="button"
-                                    onClick={() => handleSelectWine(wine)}
-                                >
-                                    {wine.image_url && (
-                                         <img
-                                            src={wine.image_url}
-                                            alt={wine.name}
-                                        />
-                                    )}
-                                    {wine.name}
-                                    {wine.winery}
-                                </button>
-                            )
-                        })}
-                    </div>
-                )}
+                    {winesResults.length > 0 && (
+                        <div>
+                            {winesResults.map((wine)=>{
+                                return (
+                                    <button
+                                        key={wine.wine_id}
+                                        type="button"
+                                        onClick={() => handleSelectWine(wine)}
+                                    >
+                                        {wine.image_url && (
+                                            <img
+                                                src={wine.image_url}
+                                                alt={wine.name}
+                                            />
+                                        )}
+                                        {wine.name}
+                                        {wine.winery}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    )}
+            </div>
         </div>
     </div>
   )
