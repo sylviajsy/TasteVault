@@ -4,6 +4,7 @@ import pool from '../db/connection.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import userRouter from '../router/user.js';
 import winesRouter from '../router/wines.js';
+import journalRouter from '../router/journal.js'
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use('/api/user',authMiddleware, userRouter);
 app.use('/api/wines', winesRouter);
+app.use('/api/journal', journalRouter);
 
 app.get('/health', async (_req, res) => {
   try {
