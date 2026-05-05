@@ -9,6 +9,17 @@ export const AddNoteModal = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [winesResults, setWinesResults] = useState([]);
     const [selectedWine, setSelectedWine] = useState([]);
+    const [formData, setFormData] = useState({
+        wine_id: null,
+        price: "",
+        comment: "",
+        user_acidity: 5,
+        user_fizziness: 0,
+        user_intensity: 5,
+        user_sweetness: 5,
+        user_tannin: 5,
+        user_flavor: [],
+    })
 
     const handleWineSearch = async (searchTerm) => {
         try {
@@ -34,6 +45,15 @@ export const AddNoteModal = ({ onClose }) => {
         setSelectedWine(wine);
         setWinesResults([]);
     }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
   return (
     <div onClick={onClose}>
@@ -79,6 +99,17 @@ export const AddNoteModal = ({ onClose }) => {
                         </div>
                     )}
             </div>
+            <label>
+                <span>Price</span>
+                <input 
+                    type="number"
+                    min="0"
+                    value={formData.price}
+                    onChange={(e) => handleChange(e.target.value)}
+                    placeholder="19.99"
+                    required
+                />
+            </label>
         </div>
     </div>
   )
