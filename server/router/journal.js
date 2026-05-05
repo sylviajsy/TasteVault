@@ -30,4 +30,60 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 })
 
+router.post('/', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const {
+            wine_id,
+            price,
+            user_acidity,
+            user_fizziness,
+            user_intensity,
+            user_sweetness,
+            user_tannin,
+            user_flavor,
+            comment,
+        } = req.body;
+
+        if (!wine_id) {
+            return res.status(400).json({ error: "wine_id is required" });
+        }
+
+        const result = await pool.query(
+        `
+            INSERT INTO tasting_notes (
+                user_id,
+                wine_id,
+                user_acidity,
+                user_fizziness,
+                user_intensity,
+                user_sweetness,
+                user_tannin,
+                user_flavor,
+                comment
+            )
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+            RETURNING *
+        `,
+        [
+            userId,
+            wine_id,
+            price,
+            user_acidity,
+            user_fizziness,
+            user_intensity,
+            user_sweetness,
+            user_tannin,
+            JSON.stringify(user_flavor),
+            comment,
+        ]
+        )
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error("POST /api/journal failed:", error);
+        res.status(500).json({ error: "Failed to save journal" });
+    } 
+})
+
 export default router;
