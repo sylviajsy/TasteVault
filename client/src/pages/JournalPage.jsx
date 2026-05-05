@@ -13,11 +13,13 @@ export const JournalPage = () => {
         >
           Add Tasting Note
         </button>
-        {isAddNoteOpen && (
-          <AddNoteModal
-            onClose={() => setIsAddNoteOpen(false)}
-          />
-        )}
+        <div>
+          {isAddNoteOpen && (
+            <AddNoteModal
+              onClose={() => setIsAddNoteOpen(false)}
+            />
+          )}
+        </div>
     </div>
   )
 }
