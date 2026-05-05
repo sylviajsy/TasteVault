@@ -8,6 +8,7 @@ export const AddNoteModal = ({ onClose }) => {
 
     const [loading, setLoading] = useState(false);
     const [WinesResults, setWinesResults] = useState([]);
+    const [selectedWine, setSelectedWine] = useState([]);
 
     const handleWineSearch = async (searchTerm) => {
         try {
@@ -29,6 +30,11 @@ export const AddNoteModal = ({ onClose }) => {
         }
     };
 
+    const handleSelectWine = (wine) => {
+        setSelectedWine(wine);
+        setWinesResults([]);
+    }
+
   return (
     <div onClick={onClose}>
         <div onClick={(e) => e.stopPropagation()}>
@@ -37,15 +43,40 @@ export const AddNoteModal = ({ onClose }) => {
             </div>
             <button
                 onClick={onClose}
-                className="rounded-full px-3 py-1 text-xl text-[#5b1228] hover:bg-[#f2e2d6]"
             >
                 ✕
             </button>
-        </div>
-        <GlobalSearchBar onSearch={handleWineSearch} />
-            {loading && (
-                <p>Searching wines...</p>
+            {selectedWine && (
+                <h2>Wine: {selectedWine.name}</h2>
             )}
+            <GlobalSearchBar onSearch={handleWineSearch} />
+                {loading && (
+                    <p>Searching wines...</p>
+                )}
+
+                {WinesResults.length > 0 && (
+                    <div>
+                        {WinesResults.map((wine)=>{
+                            return (
+                                <button
+                                    key={wine.wine_id}
+                                    type="button"
+                                    onClick={() => handleSelectWine(wine)}
+                                >
+                                    {wine.image_url && (
+                                         <img
+                                            src={wine.image_url}
+                                            alt={wine.name}
+                                        />
+                                    )}
+                                    {wine.name}
+                                    {wine.winery}
+                                </button>
+                            )
+                        })}
+                    </div>
+                )}
+        </div>
     </div>
   )
 }
