@@ -78,7 +78,9 @@ router.get('/:wineId', async (req, res) => {
       });
     }
 
-    res.status(200).json(result.rows[0]);
+    const winesDTO = result.rows.map(mapToWineDTO);
+
+    res.status(200).json(winesDTO);
   } catch (error) {
     console.error("GET /api/wines/:wineId failed:", error);
     res.status(500).json({
