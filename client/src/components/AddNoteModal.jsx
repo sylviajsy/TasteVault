@@ -9,6 +9,7 @@ export const AddNoteModal = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [winesResults, setWinesResults] = useState([]);
     const [selectedWine, setSelectedWine] = useState(null);
+    const [searchInput, setSearchInput] = useState("");
     const [formData, setFormData] = useState({
         wine_id: null,
         price: "",
@@ -20,6 +21,19 @@ export const AddNoteModal = ({ onClose }) => {
         user_tannin: 5,
         user_flavor: [],
     })
+
+    const handleWineSearchChange = (value) => {
+        setSearchInput(value);
+
+        if (selectedWine && value !== selectedWine.name) {
+            setSelectedWine(null);
+
+            setFormData((prev) => ({
+                ...prev,
+                wine_id: null,
+            }));
+        }
+    };
 
     const handleWineSearch = async (searchTerm) => {
         try {
@@ -43,6 +57,7 @@ export const AddNoteModal = ({ onClose }) => {
 
     const handleSelectWine = (wine) => {
         setSelectedWine(wine);
+        setSearchInput(wine.name);
 
         setFormData((prev) => ({
             ...prev,
@@ -61,9 +76,44 @@ export const AddNoteModal = ({ onClose }) => {
         }));
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!formData.wine_id) {
+            toast.error("Please select a wine first.");
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            const res = await fetch(`${API_URL}/api/notes`, {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Failed to save note");
+            }
+
+            toast.success("Tasting note saved!");
+            onClose();
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
   return (
     <div onClick={onClose}>
-        <div onClick={(e) => e.stopPropagation()}>
+        <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
             <div>
                 <h2>Add Tasting Note</h2>
             </div>
@@ -73,16 +123,18 @@ export const AddNoteModal = ({ onClose }) => {
                 ✕
             </button>
             <div>
-                <span>Wine:</span>
-                {selectedWine && (
-                    <span>{selectedWine.name}</span>
-                )}
-                <GlobalSearchBar onSearch={handleWineSearch} />
+                <label>Wine:</label>
+                
+                <GlobalSearchBar 
+                    value={searchInput}
+                    onChange={handleWineSearchChange}
+                    onSearch={handleWineSearch} 
+                />
                     {loading && (
                         <p>Searching wines...</p>
                     )}
 
-                    {winesResults.length > 0 && (
+                    {winesResults.length > 1 && (
                         <div>
                             {winesResults.map((wine)=>{
                                 return (
@@ -117,7 +169,7 @@ export const AddNoteModal = ({ onClose }) => {
                     required
                 />
             </label>
-        </div>
+        </form>
     </div>
   )
 }
