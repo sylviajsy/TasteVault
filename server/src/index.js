@@ -5,6 +5,7 @@ import authMiddleware from '../middleware/authMiddleware.js';
 import userRouter from '../router/user.js';
 import winesRouter from '../router/wines.js';
 import journalRouter from '../router/journal.js'
+import tasteTagsRouter from '../router/taste_tags.js'
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/user',authMiddleware, userRouter);
 app.use('/api/wines', winesRouter);
 app.use('/api/journal', journalRouter);
+app.use('/api/tasteTags', tasteTagsRouter);
 
 app.get('/health', async (_req, res) => {
   try {
