@@ -92,16 +92,29 @@ export const WineDetailModal = ({ wine, onClose }) => {
             </div>
 
             <div>
-                <p>
-                  Flavors
-                </p>
-                <div>
-                  {wine.flavors.map(f=>(
-                    <p key={f.group}>
-                      <strong>{f.group}:</strong> {f.notes.join(' ')}
-                    </p>
-                  ))}
-                </div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-wine-label">
+                Flavors
+              </p>
+              <div className="space-y-3">
+                {wine.flavors.map((flavor) => (
+                  <div
+                    key={flavor.group}
+                    className="flex flex-wrap items-center gap-2"
+                  >
+                    <span className="rounded-full bg-wine-burgundy px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-wine-ivory">
+                      {flavor.group}
+                    </span>
+                    {flavor.notes.map((note) => (
+                      <span
+                        key={`${flavor.group}-${note}`}
+                        className="rounded-full border border-wine-border bg-wine-cream px-3 py-1 text-xs font-medium text-wine-text-soft"
+                      >
+                        {note}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
               
           </div>
