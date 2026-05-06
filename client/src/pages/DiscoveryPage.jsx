@@ -34,8 +34,8 @@ export const DiscoveryPage = () => {
     }
 
     useEffect(() => {
-        loadWines(query);
-    },[query])
+        loadWines();
+    },[])
 
     const handleSelectedWine = (wine) => {
         setSelectedWine(wine);
@@ -45,8 +45,11 @@ export const DiscoveryPage = () => {
         setSelectedWine(null);
     };
 
-    const onSearch = (value) => {
+    const handleSearchChange = (value) => {
         setQuery(value);
+    };
+
+    const onSearch = (value) => {
         loadWines(value);
     };
 
@@ -58,7 +61,7 @@ export const DiscoveryPage = () => {
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar onSearch={onSearch}/>
+        <GlobalSearchBar value={query} onChange={handleSearchChange} onSearch={onSearch}/>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 
