@@ -22,6 +22,8 @@ export const AddNoteModal = ({ onClose }) => {
         user_flavor: [],
     })
     const [tasteTags, setTasteTags] = useState([]);
+    const [selectedGroups, setSelectedGroups] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
 
     const sliderFields = [
         { name: "user_acidity", label: "Acidity" },
@@ -113,6 +115,24 @@ export const AddNoteModal = ({ onClose }) => {
         }));
     };
 
+    const tagsByGroup = tasteTags.reduce((acc, tag) => {
+        if (!acc[tag.group_name]) {
+            acc[tag.group_name] = [];
+        }
+
+        acc[tag.group_name].push(tag);
+        return acc;
+        }, {}
+    );
+
+    const toggleGroup = (groupName) => {
+        setSelectedGroups((prev) =>
+            prev.includes(groupName)
+            ? prev.filter((group) => group !== groupName)
+            : [...prev, groupName]
+        );
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -161,7 +181,7 @@ export const AddNoteModal = ({ onClose }) => {
             </button>
 
             <div>
-                <label>Wine:</label>
+                <label>Wine</label>
                 
                 <GlobalSearchBar 
                     value={searchInput}
@@ -227,6 +247,27 @@ export const AddNoteModal = ({ onClose }) => {
                     />
                 </label>
             ))}
+
+            <label>
+                <span>Flavors</span>
+                {Object.keys(tagsByGroup).map((groupName) => {
+                    const isSelected = selectedGroups.includes(groupName);
+                    return (
+                        <button
+                            key={groupName}
+                            type="button"
+                            onClick={() => toggleGroup(groupName)}
+                            className={`${
+                                isSelected
+                                ? "bg-[#6f102e] text-white"
+                                : "bg-[#f2e2d6] text-[#5b1228]"
+                            }`}
+                        >
+                            {groupName.replaceAll("_", " ")}
+                        </button>
+                    )
+                })}
+            </label>
 
             <label>
                 <span>Comment</span>
