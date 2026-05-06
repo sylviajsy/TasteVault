@@ -90,6 +90,20 @@ export const WineDetailModal = ({ wine, onClose }) => {
                 ))}
               </div>
             </div>
+
+            <div>
+                <p>
+                  Flavors
+                </p>
+                <div>
+                  {wine.flavors.map(f=>(
+                    <p key={f.group}>
+                      <strong>{f.group}:</strong> {f.notes.join(' ')}
+                    </p>
+                  ))}
+                </div>
+            </div>
+              
           </div>
         </div>
       </div>
