@@ -8,7 +8,7 @@ export const AddNoteModal = ({ onClose }) => {
 
     const [loading, setLoading] = useState(false);
     const [winesResults, setWinesResults] = useState([]);
-    const [selectedWine, setSelectedWine] = useState([]);
+    const [selectedWine, setSelectedWine] = useState(null);
     const [formData, setFormData] = useState({
         wine_id: null,
         price: "",
@@ -43,6 +43,12 @@ export const AddNoteModal = ({ onClose }) => {
 
     const handleSelectWine = (wine) => {
         setSelectedWine(wine);
+
+        setFormData((prev) => ({
+            ...prev,
+            wine_id: wine.wine_id,
+        }));
+
         setWinesResults([]);
     }
 
@@ -102,10 +108,11 @@ export const AddNoteModal = ({ onClose }) => {
             <label>
                 <span>Price</span>
                 <input 
+                    name = "price"
                     type="number"
                     min="0"
                     value={formData.price}
-                    onChange={(e) => handleChange(e.target.value)}
+                    onChange={handleChange}
                     placeholder="19.99"
                     required
                 />
