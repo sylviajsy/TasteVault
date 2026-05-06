@@ -1,7 +1,7 @@
 import express from 'express';
 import pool from '../db/connection.js';
 import authMiddleware from "../middleware/authMiddleware.js";
-import { mapJournalInputDTO, mapJournalOutputDTO } from '../helpers/journalDTO';
+import { mapJournalInputDTO, mapJournalOutputDTO } from '../helpers/journalDTO.js';
 
 const router = express.Router();
 
@@ -24,7 +24,9 @@ router.get('/', authMiddleware, async (req, res) => {
         `,
         [userId]
         );
-        res.json(result.rows);
+        const response = result.rows.map(mapJournalOutputDTO);
+
+        res.json(response);
     } catch (error) {
         console.error("GET /api/journal failed:", error);
         res.status(500).json({ error: "Failed to fetch journal" });
@@ -35,17 +37,11 @@ router.post('/', authMiddleware, async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const {
-            wine_id,
-            price,
-            user_acidity,
-            user_fizziness,
-            user_intensity,
-            user_sweetness,
-            user_tannin,
-            user_flavor,
-            comment,
-        } = req.body;
+        const dto = mapJournalInputDTO(req.body, req.user.id);
+
+        if (!dto.wineId) {
+            return res.status(400).json({ error: "wine_id is required" });
+        }
 
         if (!wine_id) {
             return res.status(400).json({ error: "wine_id is required" });
@@ -69,15 +65,15 @@ router.post('/', authMiddleware, async (req, res) => {
         `,
         [
             userId,
-            wine_id,
-            price,
-            user_acidity,
-            user_fizziness,
-            user_intensity,
-            user_sweetness,
-            user_tannin,
-            JSON.stringify(user_flavor),
-            comment,
+            dto.wine_id,
+            dto.price,
+            dto.acidity,
+            dto.fizziness,
+            dto.intensity,
+            dto.sweetness,
+            dto.tannin,
+            JSON.stringify(dto.flavor),
+            dto.comment,
         ]
         )
         res.status(201).json(result.rows[0]);
