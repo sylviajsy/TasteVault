@@ -13,3 +13,36 @@ export const mapJournalInputDTO = (body, userId) => {
         comment: body.comment?.trim() || ""
     }
 }
+
+// GET DTO
+export const mapJournalOutputDTO = (row) => {
+  return {
+    noteId: row.id,
+    date: row.created_at 
+            ? new Date(row.created_at).toLocaleDateString('en-US') 
+            : 'Unknown Date',
+    wine: {
+      id: row.wine_id,
+      name: row.name,
+      winery: row.winery,
+      imageUrl: row.image_url?.startsWith('//') ? `https:${row.image_url}` : row.image_url,
+      region: row.region_display?.toUpperCase(),
+      flavors: (row.flavor_jsonb || [])
+        .slice(0, 3)
+        .map(f => ({
+          group: f.group,
+          notes: (f.notes || []).slice(0, 3)
+        }))
+    },
+    userStats: {
+        price: row.price,
+        acidity: row.user_acidity,
+        fizziness: row.user_fizziness,
+        intensity: row.user_intensity,
+        sweetness: row.user_sweetness,
+        tannin: row.user_tannin,
+        userFlavor: row.user_flavor || [],
+        comment: row.comment
+    }
+  };
+};

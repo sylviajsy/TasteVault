@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/connection.js';
 import authMiddleware from "../middleware/authMiddleware.js";
+import { mapJournalInputDTO, mapJournalOutputDTO } from '../helpers/journalDTO';
 
 const router = express.Router();
 
