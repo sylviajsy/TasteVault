@@ -122,6 +122,7 @@ export const AddNoteModal = ({ onClose }) => {
             >
                 ✕
             </button>
+
             <div>
                 <label>Wine:</label>
                 
@@ -157,6 +158,7 @@ export const AddNoteModal = ({ onClose }) => {
                         </div>
                     )}
             </div>
+
             <label>
                 <span>Price</span>
                 <input 
@@ -167,6 +169,16 @@ export const AddNoteModal = ({ onClose }) => {
                     onChange={handleChange}
                     placeholder="19.99"
                     required
+                />
+            </label>
+
+            <label>
+                <span>Comment</span>
+                <textarea
+                    name = "comment"
+                    value={formData.comment}
+                    onChange={handleChange}
+                    placeholder="What did you taste? (e.g. fruity, smooth, oak finish...)"
                 />
             </label>
         </form>
