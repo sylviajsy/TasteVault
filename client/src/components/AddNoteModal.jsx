@@ -203,6 +203,7 @@ export const AddNoteModal = ({ onClose }) => {
                         max="10"
                         value={formData[field.name]}
                         onChange={handleSliderChange}
+                        required
                     />
                 </label>
             ))}
@@ -217,7 +218,7 @@ export const AddNoteModal = ({ onClose }) => {
                 />
             </label>
 
-            {/* <button type="submit">Submit</button> */}
+            <button type="submit">Submit</button>
         </form>
     </div>
   )
