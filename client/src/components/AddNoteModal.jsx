@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { GlobalSearchBar } from "./GlobalSearchBar";
 
@@ -21,6 +21,7 @@ export const AddNoteModal = ({ onClose }) => {
         user_tannin: 5,
         user_flavor: [],
     })
+    const [tasteTags, setTasteTags] = useState([]);
 
     const sliderFields = [
         { name: "user_acidity", label: "Acidity" },
@@ -29,6 +30,25 @@ export const AddNoteModal = ({ onClose }) => {
         { name: "user_sweetness", label: "Sweetness" },
         { name: "user_tannin", label: "Tannin" },
     ];
+
+    const loadTasteTags = async () => {
+        try {
+            const res = await fetch(`${API_URL}/api/tasteTags`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Failed to fetch taste tags");
+            }
+
+            setTasteTags(data);
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
+
+    useEffect(() => {
+        loadTasteTags();
+    }, []);
 
     const handleWineSearch = async (searchTerm) => {
         try {
