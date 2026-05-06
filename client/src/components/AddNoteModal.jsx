@@ -22,18 +22,13 @@ export const AddNoteModal = ({ onClose }) => {
         user_flavor: [],
     })
 
-    const handleWineSearchChange = (value) => {
-        setSearchInput(value);
-
-        if (selectedWine && value !== selectedWine.name) {
-            setSelectedWine(null);
-
-            setFormData((prev) => ({
-                ...prev,
-                wine_id: null,
-            }));
-        }
-    };
+    const sliderFields = [
+        { name: "user_acidity", label: "Acidity" },
+        { name: "user_fizziness", label: "Fizziness" },
+        { name: "user_intensity", label: "Intensity" },
+        { name: "user_sweetness", label: "Sweetness" },
+        { name: "user_tannin", label: "Tannin" },
+    ];
 
     const handleWineSearch = async (searchTerm) => {
         try {
@@ -73,6 +68,28 @@ export const AddNoteModal = ({ onClose }) => {
         setFormData((prev) => ({
             ...prev,
             [name]: value,
+        }));
+    };
+
+    const handleWineSearchChange = (value) => {
+        setSearchInput(value);
+
+        if (selectedWine && value !== selectedWine.name) {
+            setSelectedWine(null);
+
+            setFormData((prev) => ({
+                ...prev,
+                wine_id: null,
+            }));
+        }
+    };
+
+    const handleSliderChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: Number(value),
         }));
     };
 
@@ -172,6 +189,24 @@ export const AddNoteModal = ({ onClose }) => {
                 />
             </label>
 
+            {sliderFields.map((field) => (
+                <label key={field.name}>
+                    <div>
+                        <span>{field.label}</span>
+                        <span>{formData[field.name]}</span>
+                    </div>
+
+                    <input
+                        name={field.name}
+                        type="range"
+                        min="0"
+                        max="10"
+                        value={formData[field.name]}
+                        onChange={handleSliderChange}
+                    />
+                </label>
+            ))}
+
             <label>
                 <span>Comment</span>
                 <textarea
@@ -181,6 +216,8 @@ export const AddNoteModal = ({ onClose }) => {
                     placeholder="What did you taste? (e.g. fruity, smooth, oak finish...)"
                 />
             </label>
+
+            {/* <button type="submit">Submit</button> */}
         </form>
     </div>
   )
