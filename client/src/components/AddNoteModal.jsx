@@ -23,7 +23,6 @@ export const AddNoteModal = ({ onClose }) => {
     })
     const [tasteTags, setTasteTags] = useState([]);
     const [selectedGroups, setSelectedGroups] = useState([]);
-    const [selectedTags, setSelectedTags] = useState([]);
 
     const sliderFields = [
         { name: "user_acidity", label: "Acidity" },
@@ -132,6 +131,43 @@ export const AddNoteModal = ({ onClose }) => {
             : [...prev, groupName]
         );
     }
+
+    const toggleFlavorTag = (tagName, groupName) => {
+        setFormData(prev => {
+            let newFlavors = [...prev.user_flavor];
+
+            const groupIndex = newFlavors.findIndex(
+                (item) => item.group === groupName
+            );
+
+            if (groupIndex > -1) {
+                // Group exists
+                const currentNotes = newFlavors[groupIndex].notes;
+
+                if (currentNotes.includes(tagName)) {
+                     // if Note exist, Remove
+                    const updatedNotes = currentNotes.filter((note) => note !== tagName);
+                     // if group is empty after removing note, remove the whole group
+                    if (updatedNotes.length==0){
+                        newFlavors.splice(groupIndex, 1);
+                    } else {
+                        // if Note doesn't exist, add note
+                        newFlavors[groupIndex] = {
+                            ...newFlavors[groupIndex],
+                            notes: [...currentNotes, tagName]
+                        };
+                    } 
+                }
+            } else {
+                // Group doesn't exist
+                newFlavors.push({
+                    group: groupName,
+                    notes: [tagName],
+                });
+            }
+            return { ...prev, user_flavor: newFlavors };
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -267,6 +303,48 @@ export const AddNoteModal = ({ onClose }) => {
                         </button>
                     )
                 })}
+
+                {selectedGroups.map((groupName) => (
+                    <div key={groupName} >
+                        <span>{groupName.replaceAll("_", " ")}</span>
+                        {tagsByGroup[groupName]?.map((tag) => {
+                            const isSelected = formData.user_flavor.some((item) =>
+                                item.group === groupName &&
+                                item.notes.includes(tag.tag_name)
+                            );
+
+                            return (
+                                <button
+                                    key={tag.id}
+                                    type="button"
+                                    onClick={() => toggleFlavorTag(tag.tag_name, groupName)}
+                                    className={`${
+                                        isSelected
+                                        ? "bg-[#6f102e] text-white"
+                                        : "bg-[#f2e2d6] text-[#5b1228]"
+                                    }`}
+                                >
+                                    {tag.tag_name.replaceAll("_", " ")}
+                                </button>
+                            )
+                        })}
+                    </div>
+                ))}
+
+                {formData.user_flavor.length>0 && (
+                    <div>
+                        {formData.user_flavor.map((flavorGroup) => (
+                            <div key={flavorGroup.group}>
+                                <span>{flavorGroup.group.replaceAll("_", " ")}: </span>
+                                <span>
+                                    {flavorGroup.notes.map((note) =>
+                                        note.replaceAll("_", " ")
+                                    ).join(", ")}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </label>
 
             <label>
