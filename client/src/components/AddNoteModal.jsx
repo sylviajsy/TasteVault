@@ -185,10 +185,13 @@ export const AddNoteModal = ({ onClose }) => {
         try {
             setLoading(true);
 
+            const token = localStorage.getItem("token");
+
             const res = await fetch(`${API_URL}/api/journal`, {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(formData),
             });
