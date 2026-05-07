@@ -83,6 +83,14 @@ export const AddNoteModal = ({ onClose }) => {
         setWinesResults([]);
     }
 
+    const getWineImageSrc = (imageUrl) => {
+        if (!imageUrl) {
+            return null;
+        }
+
+        return imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl;
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -213,55 +221,101 @@ export const AddNoteModal = ({ onClose }) => {
     }
 
   return (
-    <div onClick={onClose}>
-        <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
-            <div>
-                <h2>Add Tasting Note</h2>
+    <div
+        className="fixed inset-0 z-[110] flex items-center justify-center bg-[rgba(61,11,26,0.55)] p-4 backdrop-blur-sm"
+        onClick={onClose}
+    >
+        <form
+            onSubmit={handleSubmit}
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] border border-[#dcc4ba] bg-[#fff8ef] p-6 text-left shadow-[0_30px_80px_rgba(61,11,26,0.28)] md:p-8"
+        >
+            <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#ead7ce] pb-4">
+                <div>
+                    <h2 className="text-3xl font-semibold text-[#5b1228]">Add Tasting Note</h2>
+                    <p className="mt-2 text-sm text-[#7a4c43]">
+                        Save your tasting notes, mood, and flavor impressions.
+                    </p>
+                </div>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#6f102e] text-lg font-semibold text-[#fff9f2] transition hover:bg-[#581024]"
+                >
+                    ✕
+                </button>
             </div>
-            <button
-                onClick={onClose}
-            >
-                ✕
-            </button>
 
-            <div>
-                <label>Wine</label>
-                
+            <div className="mb-6">
+                <label className="mb-3 block text-sm font-semibold uppercase tracking-[0.14em] text-[#8f5a4c]">
+                    Wine
+                </label>
+
                 <GlobalSearchBar 
                     value={searchInput}
                     onChange={handleWineSearchChange}
                     onSearch={handleWineSearch} 
                 />
                     {loading && (
-                        <p>Searching wines...</p>
+                        <p className="mt-3 text-sm text-[#7a4c43]">Searching wines...</p>
                     )}
 
-                    {winesResults.length > 1 && (
-                        <div>
+                    {selectedWine ? (
+                        <div className="mt-4 rounded-2xl border border-[#dcc4ba] bg-[#f7ede3] p-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#8f5a4c]">
+                                Selected wine
+                            </p>
+                            <div className="mt-3 flex items-center gap-4">
+                                {getWineImageSrc(selectedWine.image_url) && (
+                                    <img
+                                        src={getWineImageSrc(selectedWine.image_url)}
+                                        alt={selectedWine.name}
+                                        className="h-20 w-14 rounded-xl object-contain"
+                                    />
+                                )}
+                                <div>
+                                    <p className="font-semibold text-[#5b1228]">{selectedWine.name}</p>
+                                    <p className="text-sm text-[#7a4c43]">
+                                        {selectedWine.winery || 'Unknown winery'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        winesResults.length > 0 && (
+                        <div className="mt-4 max-h-72 space-y-3 overflow-y-auto rounded-2xl border border-[#dcc4ba] bg-[#fffdf8] p-3">
                             {winesResults.map((wine)=>{
                                 return (
                                     <button
                                         key={wine.wine_id}
                                         type="button"
                                         onClick={() => handleSelectWine(wine)}
+                                        className="flex w-full items-center gap-4 rounded-2xl border border-[#ead7ce] bg-[#fff8ef] p-3 text-left transition hover:border-[#cfae9d] hover:bg-[#f7ede3]"
                                     >
-                                        {wine.image_url && (
+                                        {getWineImageSrc(wine.image_url) && (
                                             <img
-                                                src={wine.image_url}
+                                                src={getWineImageSrc(wine.image_url)}
                                                 alt={wine.name}
+                                                className="h-20 w-14 shrink-0 rounded-xl object-contain"
                                             />
                                         )}
-                                        {wine.name}
-                                        {wine.winery}
+                                        <div className="min-w-0">
+                                            <p className="truncate font-semibold text-[#5b1228]">{wine.name}</p>
+                                            <p className="truncate text-sm text-[#7a4c43]">
+                                                {wine.winery || 'Unknown winery'}
+                                            </p>
+                                        </div>
                                     </button>
                                 )
                             })}
                         </div>
-                    )}
+                    ))}
             </div>
 
-            <label>
-                <span>Price</span>
+            <label className="mb-6 block">
+                <span className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#8f5a4c]">
+                    Price
+                </span>
                 <input 
                     name = "price"
                     type="number"
@@ -270,14 +324,17 @@ export const AddNoteModal = ({ onClose }) => {
                     onChange={handleChange}
                     placeholder="19.99"
                     required
+                    className="w-full rounded-2xl border border-[#cfae9d] bg-[#fffdf8] px-4 py-3 text-[#5b1228] outline-none transition placeholder:text-[#9b7567] focus:border-[#7a1733] focus:ring-4 focus:ring-[rgba(122,23,51,0.10)]"
                 />
             </label>
 
             {sliderFields.map((field) => (
-                <label key={field.name}>
-                    <div>
-                        <span>{field.label}</span>
-                        <span>{formData[field.name]}</span>
+                <label key={field.name} className="mb-6 block">
+                    <div className="mb-2 flex items-center justify-between">
+                        <span className="block text-sm font-semibold uppercase tracking-[0.14em] text-[#8f5a4c]">
+                            {field.label}
+                        </span>
+                        <span className="text-sm font-semibold text-[#5b1228]">{formData[field.name]}</span>
                     </div>
 
                     <input
@@ -288,12 +345,16 @@ export const AddNoteModal = ({ onClose }) => {
                         value={formData[field.name]}
                         onChange={handleSliderChange}
                         required
+                        className="w-full accent-[#6f102e]"
                     />
                 </label>
             ))}
 
-            <label>
-                <span>Flavors</span>
+            <label className="mb-6 block">
+                <span className="mb-3 block text-sm font-semibold uppercase tracking-[0.14em] text-[#8f5a4c]">
+                    Flavors
+                </span>
+                <div className="flex flex-wrap gap-2">
                 {Object.keys(tagsByGroup).map((groupName) => {
                     const isSelected = selectedGroups.includes(groupName);
                     return (
@@ -301,20 +362,24 @@ export const AddNoteModal = ({ onClose }) => {
                             key={groupName}
                             type="button"
                             onClick={() => toggleGroup(groupName)}
-                            className={`${
+                            className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
                                 isSelected
-                                ? "bg-[#6f102e] text-white"
-                                : "bg-[#f2e2d6] text-[#5b1228]"
+                                ? "border-[#6f102e] bg-[#6f102e] text-white"
+                                : "border-[#dcc4ba] bg-[#f2e2d6] text-[#5b1228]"
                             }`}
                         >
                             {groupName.replaceAll("_", " ")}
                         </button>
                     )
                 })}
+                </div>
 
                 {selectedGroups.map((groupName) => (
-                    <div key={groupName} >
-                        <span>{groupName.replaceAll("_", " ")}</span>
+                    <div key={groupName} className="mt-4 rounded-2xl border border-[#ead7ce] bg-[#fffdf8] p-4">
+                        <span className="mb-3 block text-sm font-semibold capitalize text-[#5b1228]">
+                            {groupName.replaceAll("_", " ")}
+                        </span>
+                        <div className="flex flex-wrap gap-2">
                         {tagsByGroup[groupName]?.map((tag) => {
                             const isSelected = formData.user_flavor.some((item) =>
                                 item.group === groupName &&
@@ -326,25 +391,29 @@ export const AddNoteModal = ({ onClose }) => {
                                     key={tag.id}
                                     type="button"
                                     onClick={() => toggleFlavorTag(tag.tag_name, groupName)}
-                                    className={`${
+                                    className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
                                         isSelected
-                                        ? "bg-[#6f102e] text-white"
-                                        : "bg-[#f2e2d6] text-[#5b1228]"
+                                        ? "border-[#6f102e] bg-[#6f102e] text-white"
+                                        : "border-[#dcc4ba] bg-[#f2e2d6] text-[#5b1228]"
                                     }`}
                                 >
                                     {tag.tag_name.replaceAll("_", " ")}
                                 </button>
                             )
                         })}
+                        </div>
                     </div>
                 ))}
 
                 {formData.user_flavor.length>0 && (
-                    <div>
+                    <div className="mt-4 rounded-2xl bg-[#f7ede3] p-4">
+                        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#8f5a4c]">
+                            Selected flavors
+                        </p>
                         {formData.user_flavor.map((flavorGroup) => (
-                            <div key={flavorGroup.group}>
-                                <span>{flavorGroup.group.replaceAll("_", " ")}: </span>
-                                <span>
+                            <div key={flavorGroup.group} className="mb-2 text-sm text-[#5b1228] last:mb-0">
+                                <span className="font-semibold capitalize">{flavorGroup.group.replaceAll("_", " ")}: </span>
+                                <span className="text-[#7a4c43]">
                                     {flavorGroup.notes.map((note) =>
                                         note.replaceAll("_", " ")
                                     ).join(", ")}
@@ -355,17 +424,27 @@ export const AddNoteModal = ({ onClose }) => {
                 )}
             </label>
 
-            <label>
-                <span>Comment</span>
+            <label className="mb-6 block">
+                <span className="mb-2 block text-sm font-semibold uppercase tracking-[0.14em] text-[#8f5a4c]">
+                    Comment
+                </span>
                 <textarea
                     name = "comment"
                     value={formData.comment}
                     onChange={handleChange}
                     placeholder="What did you taste? (e.g. fruity, smooth, oak finish...)"
+                    className="min-h-32 w-full rounded-2xl border border-[#cfae9d] bg-[#fffdf8] px-4 py-3 text-[#5b1228] outline-none transition placeholder:text-[#9b7567] focus:border-[#7a1733] focus:ring-4 focus:ring-[rgba(122,23,51,0.10)]"
                 />
             </label>
 
-            <button type="submit">Submit</button>
+            <div className="flex justify-end">
+                <button
+                    type="submit"
+                    className="rounded-full bg-[#6f102e] px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#fff9f2] transition hover:bg-[#581024]"
+                >
+                    Submit
+                </button>
+            </div>
         </form>
     </div>
   )
