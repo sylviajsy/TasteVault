@@ -14,6 +14,7 @@ export const AddNoteModal = ({ onClose }) => {
         wine_id: null,
         price: "",
         comment: "",
+        score:5,
         user_acidity: 5,
         user_fizziness: 0,
         user_intensity: 5,
@@ -25,6 +26,7 @@ export const AddNoteModal = ({ onClose }) => {
     const [selectedGroups, setSelectedGroups] = useState([]);
 
     const sliderFields = [
+        {name: "score", label: "Score"},
         { name: "user_acidity", label: "Acidity" },
         { name: "user_fizziness", label: "Fizziness" },
         { name: "user_intensity", label: "Intensity" },
