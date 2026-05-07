@@ -151,12 +151,17 @@ export const AddNoteModal = ({ onClose }) => {
                     if (updatedNotes.length==0){
                         newFlavors.splice(groupIndex, 1);
                     } else {
-                        // if Note doesn't exist, add note
                         newFlavors[groupIndex] = {
                             ...newFlavors[groupIndex],
-                            notes: [...currentNotes, tagName]
+                            notes: updatedNotes
                         };
                     } 
+                } else {
+                    // if Note doesn't exist, add note
+                    newFlavors[groupIndex] = {
+                        ...newFlavors[groupIndex],
+                        notes: [...currentNotes, tagName] 
+                    };
                 }
             } else {
                 // Group doesn't exist
@@ -180,7 +185,7 @@ export const AddNoteModal = ({ onClose }) => {
         try {
             setLoading(true);
 
-            const res = await fetch(`${API_URL}/api/notes`, {
+            const res = await fetch(`${API_URL}/api/journal`, {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json",
