@@ -3,6 +3,7 @@ export const mapJournalInputDTO = (body, userId) => {
     return {
         userId: userId,
         wineId: body.wine_id,
+        score: body.score,
         price: body.price,
         acidity: body.user_acidity || 5,
         fizziness: body.user_fizziness || 5,
@@ -36,6 +37,7 @@ export const mapJournalOutputDTO = (row) => {
     },
     userStats: {
         price: row.price,
+        score: row.score,
         acidity: row.user_acidity,
         fizziness: row.user_fizziness,
         intensity: row.user_intensity,

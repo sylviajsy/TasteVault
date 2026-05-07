@@ -49,6 +49,7 @@ router.post('/', authMiddleware, async (req, res) => {
                 user_id,
                 wine_id,
                 price,
+                score,
                 user_acidity,
                 user_fizziness,
                 user_intensity,
@@ -57,13 +58,14 @@ router.post('/', authMiddleware, async (req, res) => {
                 user_flavor,
                 comment
             )
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
             RETURNING *
         `,
         [
             userId,
             dto.wineId,
             dto.price,
+            dto.score,
             dto.acidity,
             dto.fizziness,
             dto.intensity,
