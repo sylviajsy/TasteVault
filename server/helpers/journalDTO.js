@@ -28,7 +28,7 @@ export const mapJournalOutputDTO = (row) => {
       winery: row.winery,
       imageUrl: row.image_url?.startsWith('//') ? `https:${row.image_url}` : row.image_url,
       region: row.region_display?.toUpperCase(),
-      flavors: (row.flavor_jsonb || [])
+      flavors: (row.user_flavor || [])
         .slice(0, 3)
         .map(f => ({
           group: f.group,
