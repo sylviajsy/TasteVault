@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { GlobalSearchBar } from "./GlobalSearchBar";
 
-
 export const AddNoteModal = ({ onClose }) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -24,6 +23,8 @@ export const AddNoteModal = ({ onClose }) => {
     })
     const [tasteTags, setTasteTags] = useState([]);
     const [selectedGroups, setSelectedGroups] = useState([]);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [generatedText, setGeneratedText] = useState("");
 
     const sliderFields = [
         {name: "score", label: "Score"},
@@ -48,6 +49,48 @@ export const AddNoteModal = ({ onClose }) => {
             toast.error(error.message);
         }
     };
+
+    const handleGenerateNote = async () => {
+        try {
+            setIsGenerating(true);
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(`${API_URL}/api/ai/generate-note`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    score: formData.score,
+                    user_acidity: formData.user_acidity,
+                    user_fizziness: formData.user_fizziness,
+                    user_intensity: formData.user_intensity,
+                    user_sweetness: formData.user_sweetness,
+                    user_tannin: formData.user_tannin,
+                    user_flavor: formData.user_flavor,
+                    comment: formData.comment,
+                }),
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+            throw new Error(data.error || "Failed to generate note");
+            }
+
+            setGeneratedText(data.polishedContent);
+
+            setFormData((prev) => ({
+                ...prev,
+                comment: data.polishedContent,
+            }));
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message);
+        } finally {
+            setIsGenerating(false);
+        }
+    }
 
     useEffect(() => {
         loadTasteTags();
@@ -438,6 +481,14 @@ export const AddNoteModal = ({ onClose }) => {
                     className="min-h-32 w-full rounded-2xl border border-[#cfae9d] bg-[#fffdf8] px-4 py-3 text-[#5b1228] outline-none transition placeholder:text-[#9b7567] focus:border-[#7a1733] focus:ring-4 focus:ring-[rgba(122,23,51,0.10)]"
                 />
             </label>
+
+            <button
+                type="button"
+                onClick={handleGenerateNote}
+                disabled={isGenerating}
+            >
+                {isGenerating ? "Magic in progress..." : "Generate AI Note"}
+            </button>
 
             <div className="flex justify-end">
                 <button
