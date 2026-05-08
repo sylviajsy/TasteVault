@@ -47,7 +47,6 @@ export const DiscoveryPage = () => {
 
     const onSearch = (value) => {
         setQuery(value);
-        loadWines(value);
     };
 
   return (
