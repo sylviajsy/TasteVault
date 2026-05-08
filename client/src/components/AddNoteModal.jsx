@@ -486,6 +486,7 @@ export const AddNoteModal = ({ onClose }) => {
                 type="button"
                 onClick={handleGenerateNote}
                 disabled={isGenerating}
+                className="mx-auto block rounded-full border border-[#6f102e] bg-[#f7ede3] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#6f102e] transition hover:bg-[#f2e2d6] disabled:cursor-not-allowed disabled:border-[#dcc4ba] disabled:bg-[#efe2d6] disabled:text-[#9b7567]"
             >
                 {isGenerating ? "Magic in progress..." : "Generate AI Note"}
             </button>
