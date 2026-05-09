@@ -1,3 +1,6 @@
+@config "../tailwind.config.js";
+@import "tailwindcss";
+
 :root {
   --text: #6b4b4b;
   --text-h: #4a1023;
@@ -25,8 +28,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
-  @media (max-width: 1024px) {
+@media (max-width: 1024px) {
+  :root {
     font-size: 16px;
   }
 }
@@ -91,4 +96,3 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
-@import "tailwindcss";
