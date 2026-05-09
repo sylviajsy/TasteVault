@@ -3,6 +3,33 @@ import pool from '../db/connection.js';
 
 const router = express.Router();
 
+const mapToWineDTO = (wine) => {
+  const grapesArray = wine.grapes 
+    ? (Array.isArray(wine.grapes) ? wine.grapes : wine.grapes.split(',').map(g => g.trim()))
+    : [];
+
+  return {
+    id: wine.wine_id,
+    name: wine.name || 'Unknown Wine',
+    winery: wine.winery || 'Unknown Winery',
+    year: wine.year || 'N/A',
+    image_url: wine.image_url?.startsWith('//') 
+      ? `https:${wine.image_url}` 
+      : (wine.image_url || null),
+    region: (wine.region_display || 'Region unavailable').toUpperCase(),
+    price: wine.price ? `$${Number(wine.price).toFixed(2)}` : 'N/A',
+    acidity: wine.acidity !== null ? wine.acidity : 'N/A',
+    tannin: wine.tannin !== null ? wine.tannin : 'N/A',
+    intensity: wine.intensity !== null ? wine.intensity : 'N/A',
+    sweetness: wine.sweetness !== null ? wine.sweetness : 'N/A',
+    grapes: grapesArray,
+    flavors: (wine.flavor_jsonb || []).slice(0, 3).map(f => ({
+      group: f.group,
+      notes: f.notes.slice(0, 3) || []
+    }))
+  }
+}
+
 router.get('/', async (req, res) => {
 
   const { search } = req.query;
@@ -23,7 +50,9 @@ router.get('/', async (req, res) => {
     } else {
       result = await pool.query('SELECT * FROM wines ORDER BY wine_id');
     }
-    res.status(200).json(result.rows);
+    const winesDTO = result.rows.map(mapToWineDTO);
+
+    res.status(200).json(winesDTO);
   } catch (error) {
     console.error("GET /api/wines failed:", error);
     res.status(500).json({ error: 'Failed to fetch wines' });
@@ -49,7 +78,9 @@ router.get('/:wineId', async (req, res) => {
       });
     }
 
-    res.status(200).json(result.rows[0]);
+    const winesDTO = result.rows.map(mapToWineDTO);
+
+    res.status(200).json(winesDTO);
   } catch (error) {
     console.error("GET /api/wines/:wineId failed:", error);
     res.status(500).json({

@@ -49,15 +49,11 @@ export const DiscoveryPage = () => {
         setQuery(value);
     };
 
-    const onSearch = (value) => {
-        loadWines(value);
-    };
-
   return (
     <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
         {loading && (
-          <p className="mb-4 text-[#6f102e]">
+          <p className="mb-4 text-wine-burgundy">
             Loading wines...
           </p>
         )}
@@ -65,7 +61,7 @@ export const DiscoveryPage = () => {
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 
-                  key={wine.wine_id}
+                  key={wine.id}
                   wine={wine}
                   onSelect={handleSelectedWine}
               />

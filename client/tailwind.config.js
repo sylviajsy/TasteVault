@@ -1,0 +1,40 @@
+export default {
+  theme: {
+    extend: {
+      colors: {
+        wine: {
+          burgundy: '#6f102e',
+          'burgundy-dark': '#581024',
+          'burgundy-soft': '#7a1733',
+          'burgundy-ring': '#9f5066',
+          cream: '#fff8ef',
+          'cream-soft': '#f8f1e7',
+          'cream-deep': '#f2e2d6',
+          blush: '#f8e6da',
+          rose: '#f2d4ca',
+          panel: '#f7ede3',
+          chip: '#fff3e8',
+          ivory: '#fff9f2',
+          border: '#dcc4ba',
+          'border-soft': '#d3b8ad',
+          'border-strong': '#cfae9d',
+          divider: '#ead7ce',
+          text: '#5b1228',
+          'text-soft': '#7a4c43',
+          muted: '#6b4b4b',
+          label: '#8f5a4c',
+          placeholder: '#9b7567',
+          overlay: '#3d0b1a',
+        },
+      },
+      boxShadow: {
+        'wine-nav': '0 10px 30px rgba(96, 17, 40, 0.12)',
+        'wine-menu': '0 16px 34px rgba(96, 17, 40, 0.16)',
+        'wine-card': '0 16px 36px rgba(96, 17, 40, 0.10)',
+        'wine-card-hover': '0 20px 40px rgba(96, 17, 40, 0.16)',
+        'wine-input': '0 12px 28px rgba(96, 17, 40, 0.08)',
+        'wine-modal': '0 30px 80px rgba(61, 11, 26, 0.28)',
+      },
+    },
+  },
+};

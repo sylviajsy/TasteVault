@@ -20,7 +20,7 @@ app.use('/api/journal', journalRouter);
 app.use('/api/tasteTags', tasteTagsRouter);
 app.use('/api/ai', aiRouter);
 
-app.get('/health', async (_req, res) => {
+app.get('/', async (_req, res) => {
   try {
     await pool.query('SELECT 1');
 
