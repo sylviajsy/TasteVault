@@ -52,4 +52,22 @@ describe('Journal Routes', () => {
         expect(res.body).toEqual(mockResponse); 
         expect(pool.query).toHaveBeenCalledTimes(2);
     })
+
+    test('GET /api/journal', async () => {
+        const mockResponse = { 
+            id: 1, 
+            user_id: "test-user-id", 
+            ...mockNote, 
+            created_at: "2026-05-11T00:00:00.000Z"
+        };
+
+        pool.query.mockResolvedValueOnce({
+            rows: [mockResponse],
+        })
+
+        const res = await request(app).get("/api/journal");
+
+        expect(res.statusCode).toBe(200);
+        expect(pool.query).toHaveBeenCalledTimes(1);
+    })
 })
