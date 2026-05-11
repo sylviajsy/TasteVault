@@ -46,3 +46,5 @@ app.listen(port, async () => {
     console.error(error.message);
   }
 });
+
+export default app;
