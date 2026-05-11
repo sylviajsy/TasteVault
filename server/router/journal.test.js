@@ -18,6 +18,7 @@ const mockNote = {
             user_intensity: 8,
             user_sweetness: 3,
             user_tannin: 5,
+            score: 9,
             user_flavor: [
                 {
                 group: "black_fruit",
