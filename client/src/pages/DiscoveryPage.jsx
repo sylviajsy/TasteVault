@@ -45,10 +45,6 @@ export const DiscoveryPage = () => {
         setSelectedWine(null);
     };
 
-    const handleSearchChange = (value) => {
-        setQuery(value);
-    };
-
   return (
     <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
@@ -57,7 +53,7 @@ export const DiscoveryPage = () => {
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar value={query} onChange={handleSearchChange} onSearch={onSearch}/>
+        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadWines}/>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 
