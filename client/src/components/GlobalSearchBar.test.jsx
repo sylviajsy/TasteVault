@@ -12,7 +12,7 @@ describe('Global Search Bar', () => {
         vi.clearAllMocks();
     });
 
-    test('calls onChange when typing', async () => {
+    test('calls onChange when typing', () => {
         const onChange = vi.fn();
 
        render(
@@ -29,4 +29,23 @@ describe('Global Search Bar', () => {
 
         expect(onChange).toHaveBeenCalledWith("Cab");
     })
+
+    test("calls onSearch after debounce", () => {
+        vi.useFakeTimers();
+
+        const onSearch = vi.fn();
+
+        render(
+            <GlobalSearchBar
+                value="Cabernet"
+                onChange={vi.fn()}
+                onSearch={onSearch}
+            />
+        );
+
+        vi.advanceTimersByTime(500);
+        
+        // assert callback
+        expect(onSearch).toHaveBeenCalledWith("Cabernet");
+    });
 })
