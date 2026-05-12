@@ -57,7 +57,26 @@ describe('Add Note Modal', () => {
         const submitButton = screen.getByRole("button", { name: /^submit$/i });
         await user.click(submitButton);
 
-        console.log(global.fetch.mock.calls.map((call) => call[0]));
+       await waitFor(() => {
+            const submitCall = global.fetch.mock.calls.find(
+                ([, options]) => options?.method === "POST"
+            );
+
+            expect(submitCall).toBeDefined();
+        });
+
+        const submitCall = global.fetch.mock.calls.find(
+            ([, options]) => options?.method === "POST"
+        );
+
+        expect(submitCall[0]).toContain("/api/journal");
+
+        const body = JSON.parse(submitCall[1].body);
+
+        expect(body).toMatchObject({
+            wine_id: 101,
+            price: "19.99",
+        });
 
     // //    try {
     // //         await waitFor(() => {
