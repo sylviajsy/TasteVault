@@ -26,6 +26,7 @@ describe('Add Note Modal', () => {
         localStorage.setItem("token", "fake-token");
         global.fetch = vi.fn();
     });
+
     test('Submit note Integration test', async () => {
         const user = userEvent.setup();
 
@@ -153,5 +154,4 @@ describe('Add Note Modal', () => {
 
         expect(onClose).toHaveBeenCalled();
     })
-
 })
