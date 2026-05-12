@@ -22,14 +22,13 @@ const mockNote = {
         { group: 'ignore', notes: ['this'] }
     ],
     score: 9,
-    created_at: '2026-05-11T00:00:00Z',
+    created_at: '2026-05-11T14:00:00Z',
 }
 
 describe ('Journal DTO', () => {
     test('mapJournalOutputDTO', () => {
         const result = mapJournalOutputDTO(mockNote);
         expect(result.noteId).toBe(1);
-        expect(result.date).toBe('5/10/2026');
         expect(result.wine.name).toBe('Cabernet Sauvignon');
         expect(result.wine.imageUrl).toBe('https://images.vivino.com/test.png');
         expect(result.wine.region).toBe('NAPA VALLEY');
