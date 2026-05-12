@@ -12,7 +12,10 @@ export const DiscoveryPage = () => {
     const [selectedWine, setSelectedWine] = useState(null);
     const [query, setQuery] = useState("");
 
-    const loadWines = async (search = "") => {
+    const loadWines = async (searchTerm = "") => {
+        // Search input cleanup
+        const search = searchTerm.replace(/\s+/g, " ").trim();
+
         try {
             setLoading(true);
 
