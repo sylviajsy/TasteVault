@@ -29,10 +29,43 @@ describe('Add Note Modal', () => {
     test('Submit note Integration test', async () => {
         const user = userEvent.setup();
 
-        global.fetch
-            .mockResolvedValueOnce({ ok: true, json: async () => mockTags }) // Load tags
-            .mockResolvedValueOnce({ ok: true, json: async () => mockWines }) // Search wine
-            .mockResolvedValueOnce({ ok: true, json: async () => ({ wine_id: 101, comment: "Bright and fresh.", }) }); // Submit
+        global.fetch = vi.fn((url, options) => {
+            if (url.includes("/api/tasteTags")) {
+                return Promise.resolve({
+                    ok: true,
+                    json: async () => mockTags,
+                });
+            }
+
+            if (url.includes("/api/wines")) {
+                return Promise.resolve({
+                    ok: true,
+                    json: async () => mockWines,
+                });
+            }
+
+            if (url.includes("/api/ai/generate-note")) {
+                return Promise.resolve({
+                    ok: true,
+                    json: async () => ({
+                        polishedContent:
+                        "Elegant blackberry aromas with smooth tannins.",
+                    }),
+                });
+            }
+
+            if (url.includes("/api/journal") && options?.method === "POST") {
+                return Promise.resolve({
+                    ok: true,
+                    json: async () => ({
+                        id: 1,
+                        wine_id: 101,
+                    }),
+                });
+            }
+
+            return Promise.reject(new Error(`Unhandled fetch: ${url}`));
+        });
 
         render(<AddNoteModal onClose={onClose} />);
 
@@ -68,6 +101,19 @@ describe('Add Note Modal', () => {
             "Bright and fresh."
         );
 
+        await user.click(
+            screen.getByRole("button", {
+                name: /generate ai note/i,
+            })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByLabelText(/comment/i)).toHaveValue(
+                    "Elegant blackberry aromas with smooth tannins."
+                )
+        });
+
         const submitButton = screen.getByRole("button", { name: /^submit$/i });
         await user.click(submitButton);
 
@@ -95,7 +141,7 @@ describe('Add Note Modal', () => {
         expect(body).toMatchObject({
             wine_id: 101,
             price: "20",
-            comment: "Bright and fresh.",
+            comment: "Elegant blackberry aromas with smooth tannins.",
             score: 5,
             user_acidity: 5,
             user_fizziness: 0,
