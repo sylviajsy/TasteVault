@@ -1,6 +1,6 @@
-import { describe, test, expect, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
+import { describe, test, expect, vi, beforeEach } from "vitest";
 import { AddNoteModal } from "./AddNoteModal";
 
 vi.mock("react-toastify", () => ({
@@ -29,24 +29,56 @@ describe('Add Note Modal', () => {
         const user = userEvent.setup();
 
         global.fetch
-            .mockResolvedValueOnce({
-                ok: true,
-                json: async () => mockTags,
-            }).mockResolvedValueOnce({
-                ok: true,
-                json: async () => mockWines,
-            })
+            .mockResolvedValueOnce({ ok: true, json: async () => mockTags }) // Load tags
+            .mockResolvedValueOnce({ ok: true, json: async () => mockWines }) // Search wine
+            .mockResolvedValueOnce({ ok: true, json: async () => ({ id: 1,wine_id: 101, comment: "Bright and fresh.", }) }); // Submit
 
         render(<AddNoteModal onClose={onClose} />);
 
         await user.type(
             screen.getByPlaceholderText(/search wines/i),
-            "Chardonnay"
+            "Dark Horse Cabernet"
         );
+
+        const wineText = await screen.findByText(/Dark Horse Cabernet/i);
+        await user.click(wineText.closest("button"));
 
         expect(
             screen.getByPlaceholderText(/search wines/i)
-        ).toHaveValue("Chardonnay");
+        ).toHaveValue("Dark Horse Cabernet");
+
+        await user.type(screen.getByLabelText(/price/i), "19.99");
+
+        await user.type(
+            screen.getByLabelText(/comment/i),
+            "Bright and fresh."
+        );
+
+        const submitButton = screen.getByRole("button", { name: /^submit$/i });
+        await user.click(submitButton);
+
+        console.log(global.fetch.mock.calls.map((call) => call[0]));
+
+    // //    try {
+    // //         await waitFor(() => {
+    // //             expect(onClose).toHaveBeenCalled();
+    // //         }, { timeout: 3000 });
+    // //     } catch (e) {
+    // //         screen.debug(); 
+    // //         throw e;
+    // //     }
+
+    //     // const submitCall = global.fetch.mock.calls.find(call => call[0].includes('/api/journal'));
+    //     // expect(submitCall[1].method).toBe("POST");
+
+        // await waitFor(() => {
+        //     const submitCall = global.fetch.mock.calls.find((call) =>
+        //         call[0].includes("/api/journal")
+        //     );
+
+        //     expect(submitCall).toBeDefined();
+        // })
+
     })
 
 })

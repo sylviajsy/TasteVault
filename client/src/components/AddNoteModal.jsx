@@ -228,6 +228,7 @@ export const AddNoteModal = ({ onClose }) => {
     };
 
     const handleSubmit = async (e) => {
+        console.log("handleSubmit fired", formData);
         e.preventDefault();
 
         if (!formData.wine_id) {
@@ -332,7 +333,7 @@ export const AddNoteModal = ({ onClose }) => {
                             {winesResults.map((wine)=>{
                                 return (
                                     <button
-                                        key={wine.wine_id}
+                                        key={wine.wine_id || `${wine.name}-${wine.winery}`}
                                         type="button"
                                         onClick={() => handleSelectWine(wine)}
                                         className="flex w-full items-center gap-4 rounded-2xl border border-[#ead7ce] bg-[#fff8ef] p-3 text-left transition hover:border-[#cfae9d] hover:bg-[#f7ede3]"
