@@ -29,6 +29,7 @@ describe ('Journal DTO', () => {
     test('mapJournalOutputDTO', () => {
         const result = mapJournalOutputDTO(mockNote);
         expect(result.noteId).toBe(1);
+        expect(result.date).toBe('5/11/2026');
         expect(result.wine.name).toBe('Cabernet Sauvignon');
         expect(result.wine.imageUrl).toBe('https://images.vivino.com/test.png');
         expect(result.wine.region).toBe('NAPA VALLEY');

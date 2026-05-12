@@ -20,7 +20,7 @@ export const mapJournalOutputDTO = (row) => {
   return {
     noteId: row.id,
     date: row.created_at 
-            ? new Date(row.created_at).toLocaleDateString('en-US') 
+            ? new Date(row.created_at).toLocaleDateString('en-US', {timeZone: "UTC"}) 
             : 'Unknown Date',
     wine: {
       id: row.wine_id,
