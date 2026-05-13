@@ -45,16 +45,6 @@ describe('Add Note Modal', () => {
                 });
             }
 
-            if (url.includes("/api/ai/generate-note")) {
-                return Promise.resolve({
-                    ok: true,
-                    json: async () => ({
-                        polishedContent:
-                        "Elegant blackberry aromas with smooth tannins.",
-                    }),
-                });
-            }
-
             if (url.includes("/api/journal") && options?.method === "POST") {
                 return Promise.resolve({
                     ok: true,
@@ -102,19 +92,6 @@ describe('Add Note Modal', () => {
             "Bright and fresh."
         );
 
-        await user.click(
-            screen.getByRole("button", {
-                name: /generate ai note/i,
-            })
-        );
-
-        await waitFor(() => {
-            expect(
-                screen.getByLabelText(/comment/i)).toHaveValue(
-                    "Elegant blackberry aromas with smooth tannins."
-                )
-        });
-
         const submitButton = screen.getByRole("button", { name: /^submit$/i });
         await user.click(submitButton);
 
@@ -142,7 +119,7 @@ describe('Add Note Modal', () => {
         expect(body).toMatchObject({
             wine_id: 101,
             price: "20",
-            comment: "Elegant blackberry aromas with smooth tannins.",
+            comment: "Bright and fresh.",
             score: 5,
             user_acidity: 5,
             user_fizziness: 0,
@@ -153,5 +130,60 @@ describe('Add Note Modal', () => {
         });
 
         expect(onClose).toHaveBeenCalled();
+    })
+    
+    test('AI Generation', async () => {
+        const user = userEvent.setup();
+
+        global.fetch = vi.fn((url) => {
+            if (url.includes("/api/tasteTags")) {
+                return Promise.resolve({
+                    ok: true,
+                    json: async () => mockTags,
+                });
+            }
+
+            if (url.includes("/api/ai/generate-note")) {
+                return Promise.resolve({
+                    ok: true,
+                    json: async () => ({
+                        polishedContent:
+                        "Elegant blackberry aromas with smooth tannins.",
+                    }),
+                });
+            }
+
+            return Promise.reject(new Error(`Unhandled fetch: ${url}`));
+        })
+
+        render(<AddNoteModal onClose={onClose} />);
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining("/api/tasteTags")
+            );
+        });
+
+        await user.type(
+            screen.getByLabelText(/comment/i),
+            "Bright and fresh."
+        );
+
+        await user.click(
+            screen.getByRole("button", { name: /generate ai note/i })
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByLabelText(/comment/i)).toHaveValue(
+                    "Elegant blackberry aromas with smooth tannins."
+                )
+        });
+
+        const aiCall = global.fetch.mock.calls.find(([url]) =>
+            String(url).includes("/api/ai/generate-note")
+        );
+
+        expect(aiCall).toBeDefined();
     })
 })
