@@ -1,3 +1,5 @@
+import { fixUrl } from "./url.js";
+
 // POST DTO
 export const mapJournalInputDTO = (body, userId) => {
     return {
@@ -26,7 +28,7 @@ export const mapJournalOutputDTO = (row) => {
       id: row.wine_id,
       name: row.name,
       winery: row.winery,
-      imageUrl: row.image_url?.startsWith('//') ? `https:${row.image_url}` : row.image_url,
+      imageUrl: fixUrl(row.image_url),
       region: row.region_display?.toUpperCase(),
       flavors: (row.user_flavor || [])
         .slice(0, 3)

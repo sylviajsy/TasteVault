@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../db/connection.js';
+import { fixUrl } from "../helpers/url.js";
 
 const router = express.Router();
 
@@ -13,9 +14,7 @@ const mapToWineDTO = (wine) => {
     name: wine.name || 'Unknown Wine',
     winery: wine.winery || 'Unknown Winery',
     year: wine.year || 'N/A',
-    image_url: wine.image_url?.startsWith('//') 
-      ? `https:${wine.image_url}` 
-      : (wine.image_url || null),
+    image_url: fixUrl(wine.image_url),
     region: (wine.region_display || 'Region unavailable').toUpperCase(),
     price: wine.price ? `$${Number(wine.price).toFixed(2)}` : 'N/A',
     acidity: wine.acidity !== null ? wine.acidity : 'N/A',
