@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { AddNoteModal } from "./AddNoteModal";
 
@@ -186,4 +187,34 @@ describe('Add Note Modal', () => {
 
         expect(aiCall).toBeDefined();
     })
+
+    test("updates slider values", async () => {
+        global.fetch = vi.fn((url) => {
+            if (url.includes("/api/tasteTags")) {
+            return Promise.resolve({
+                ok: true,
+                json: async () => [],
+            });
+            }
+
+            return Promise.reject(new Error(`Unhandled fetch: ${url}`));
+        });
+
+        render(<AddNoteModal onClose={vi.fn()} />);
+
+        const aciditySlider = screen.getByRole("slider", {
+            name: /acidity/i,
+        });
+        
+        const sweetnessSlider = screen.getByRole("slider", {
+            name: /sweetness/i,
+        });
+
+        fireEvent.change(aciditySlider, {
+            target: { value: "8" },
+        });
+
+        expect(aciditySlider).toHaveValue("8");
+        expect(sweetnessSlider).toHaveValue("5");
+    });
 })
