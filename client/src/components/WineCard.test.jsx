@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { WineCard } from "./WineCard";
 
 const mockWine = {
@@ -21,5 +21,16 @@ describe('Wine Card', () => {
             "https://test.com/wine.png"
         );
         expect(screen.getByText("Cabernet Sauvignon")).toBeInTheDocument();
+    })
+
+    test('Calls onClick when clicked',async () => {
+        const user = userEvent.setup();
+        const onSelect = vi.fn();
+
+        render(<WineCard wine={mockWine} onSelect={onSelect} />);
+
+        await user.click(screen.getByText("Dark Horse Cabernet"));
+
+        expect(onSelect).toHaveBeenCalledWith(mockWine);
     })
 })
