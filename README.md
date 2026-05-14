@@ -9,13 +9,11 @@ The app is designed for both casual wine drinkers and enthusiasts who want to be
 ## 🚀 Features
 1. 🔍 Wine Search
    - Search from a curated wine database using fuzzy matching.
-2. ❤️ Favorites System
-   - Save wines for quick access.
-3. 📝 Tasting Note Creation
+2. 📝 Tasting Note Creation
    - Record structured tasting data using sliders and tags.
-4. 🤖 AI Tasting Note Assistant
+3. 🤖 AI Tasting Note Assistant
    - Generate professional tasting descriptions based on user input.
-5. 📚 Wine Journal (Timeline)
+4. 📚 Wine Journal
    - View and search past tasting note
 
 ## 🧱 Tech Stack
@@ -24,11 +22,4 @@ The app is designed for both casual wine drinkers and enthusiasts who want to be
 - AI Integration: Gemini API
 
 ## 🛠️ Installation
-To install this app, please install the project dependencies and run it locally.
-1. Clone the repo
-2. Run a terminal and cd into folder `Client`
-    - `npm start`
-    - Go to `localhost/3000` to start the frontend of the app
-3. Run a second terminal and cd into folder `backend`
-    - `npm start`
-    - go to `localhost/5000` to start the backend of the app
+To install this app, please see `\doc\testing.md` for instructions.
