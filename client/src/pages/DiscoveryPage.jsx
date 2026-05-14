@@ -12,7 +12,10 @@ export const DiscoveryPage = () => {
     const [selectedWine, setSelectedWine] = useState(null);
     const [query, setQuery] = useState("");
 
-    const loadWines = async (search = "") => {
+    const loadWines = async (searchTerm = "") => {
+        // Search input cleanup
+        const search = searchTerm.replace(/\s+/g, " ").trim();
+
         try {
             setLoading(true);
 
@@ -34,8 +37,8 @@ export const DiscoveryPage = () => {
     }
 
     useEffect(() => {
-        loadWines(query);
-    },[query])
+        loadWines();
+    },[])
 
     const handleSelectedWine = (wine) => {
         setSelectedWine(wine);
@@ -43,10 +46,6 @@ export const DiscoveryPage = () => {
 
     const handleCloseModal = () => {
         setSelectedWine(null);
-    };
-
-    const onSearch = (value) => {
-        setQuery(value);
     };
 
   return (
@@ -57,7 +56,7 @@ export const DiscoveryPage = () => {
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar onSearch={onSearch}/>
+        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadWines}/>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 

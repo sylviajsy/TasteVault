@@ -4,6 +4,9 @@ import pool from '../db/connection.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import userRouter from '../router/user.js';
 import winesRouter from '../router/wines.js';
+import journalRouter from '../router/journal.js';
+import tasteTagsRouter from '../router/taste_tags.js';
+import aiRouter from "../router/ai.js";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -13,6 +16,9 @@ app.use(express.json());
 
 app.use('/api/user',authMiddleware, userRouter);
 app.use('/api/wines', winesRouter);
+app.use('/api/journal', journalRouter);
+app.use('/api/tasteTags', tasteTagsRouter);
+app.use('/api/ai', aiRouter);
 
 app.get('/', async (_req, res) => {
   try {
@@ -40,3 +46,5 @@ app.listen(port, async () => {
     console.error(error.message);
   }
 });
+
+export default app;
