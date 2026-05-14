@@ -1,11 +1,79 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify';
+import { WineCard } from '../components/WineCard';
+import { WineDetailModal } from '../components/WineDetailModal';
+import { GlobalSearchBar } from '../components/GlobalSearchBar';
 
 export const DiscoveryPage = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    const [wines, setWines] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [selectedWine, setSelectedWine] = useState(null);
+    const [query, setQuery] = useState("");
+
+    const loadWines = async (searchTerm = "") => {
+        // Search input cleanup
+        const search = searchTerm.replace(/\s+/g, " ").trim();
+
+        try {
+            setLoading(true);
+
+            const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(search)}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to fetch wines');
+            }
+
+            setWines(data);
+            console.log('Wines', data);
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message);
+        }  finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        loadWines();
+    },[])
+
+    const handleSelectedWine = (wine) => {
+        setSelectedWine(wine);
+    }
+
+    const handleCloseModal = () => {
+        setSelectedWine(null);
+    };
+
   return (
-    <div>
+    <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
-        <p>Search wines here.</p>
+        {loading && (
+          <p className="mb-4 text-wine-burgundy">
+            Loading wines...
+          </p>
+        )}
+        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadWines}/>
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {wines.map((wine) => (
+              <WineCard 
+                  key={wine.id}
+                  wine={wine}
+                  onSelect={handleSelectedWine}
+              />
+          ))}
+        </div>
+        <div>
+            {selectedWine && (
+                <WineDetailModal 
+                    wine={selectedWine}
+                    onClose={handleCloseModal}
+                />
+            )}
+        </div>
     </div>
   )
 }
-
