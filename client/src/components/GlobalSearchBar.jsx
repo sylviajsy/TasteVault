@@ -2,6 +2,10 @@ import { useEffect } from "react";
 
 export const GlobalSearchBar = ({ value, onChange, onSearch }) => {
     useEffect(() => {
+        const trimmed = value.trim();
+
+        if (!trimmed) return;
+
         const timer = setTimeout(() => {
             onSearch(value);
         }, 500);
