@@ -59,19 +59,19 @@ export const WineDetailModal = ({ wine, onClose }) => {
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Acidity</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.acidity}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.acidity}/10</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Tannin</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.tannin}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.tannin}/10</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Intensity</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.intensity}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.intensity}/10</p>
               </div>
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Sweetness</p>
-                <p className="mt-1 font-semibold text-wine-text">{wine.sweetness}</p>
+                <p className="mt-1 font-semibold text-wine-text">{wine.sweetness}/10</p>
               </div>
             </div>
 
