@@ -4,11 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { WineCard } from "./WineCard";
 
 const mockWine = {
-  id: 101,
-  name: "Dark Horse Cabernet",
-  winery: "Dark Horse",
-  grapes: ["Cabernet Sauvignon", "Merlot"],
-  image_url: "https://test.com/wine.png",
+    id: 101,
+    name: "Dark Horse Cabernet",
+    winery: "Dark Horse",
+    grapes: ["Cabernet Sauvignon", "Merlot"],
+    image_url: "https://test.com/wine.png",
 };
 
 describe('Wine Card', () => {
