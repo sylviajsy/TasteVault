@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { DiscoveryPage } from "./DiscoveryPage";
 
@@ -9,7 +10,18 @@ vi.mock("react-toastify", () => ({
 }));
 
 vi.mock("../components/GlobalSearchBar", () => ({
-  GlobalSearchBar: () => <div>Mock Search Bar</div>,
+  GlobalSearchBar: ({ value, onChange, onSearch }) => (
+    <div>
+      <input
+        placeholder="Search wines, winery, region..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <button type="button" onClick={() => onSearch(value)}>
+        Search
+      </button>
+    </div>
+  ),
 }));
 
 vi.mock("../components/WineCard", () => ({
@@ -20,38 +32,72 @@ vi.mock("../components/WineDetailModal", () => ({
   WineDetailModal: () => <div>Mock Wine Detail Modal</div>,
 }));
 
+const mockWines = [
+            {
+            id: 1,
+            name: "Opus One",
+            winery: "Opus One Winery",
+            },
+            {
+            id: 2,
+            name: "Cakebread Cabernet",
+            winery: "Cakebread Cellars",
+            },
+        ]
+
 describe("DiscoveryPage", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    global.fetch = vi.fn();
-  });
-
-  test("renders wines after fetch", async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => [
-        {
-          id: 1,
-          name: "Opus One",
-          winery: "Opus One Winery",
-        },
-        {
-          id: 2,
-          name: "Cakebread Cabernet",
-          winery: "Cakebread Cellars",
-        },
-      ],
+    beforeEach(() => {
+        vi.clearAllMocks();
+        global.fetch = vi.fn();
     });
 
-    render(<DiscoveryPage />);
+    test("renders wines after fetch", async () => {
+        global.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => mockWines,
+        });
 
-    await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining("/api/wines?search=")
-      );
+        render(<DiscoveryPage />);
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining("/api/wines?search=")
+            );
+        });
+
+        expect(await screen.findByText("Opus One")).toBeInTheDocument();
+        expect(await screen.findByText("Cakebread Cabernet")).toBeInTheDocument();
     });
 
-    expect(await screen.findByText("Opus One")).toBeInTheDocument();
-    expect(await screen.findByText("Cakebread Cabernet")).toBeInTheDocument();
-  });
+    test("fetches wines when searching", async () => {
+        const user = userEvent.setup();
+
+        global.fetch
+        .mockResolvedValueOnce({
+            ok: true,
+            json: async () => [],
+        })
+        .mockResolvedValueOnce({
+            ok: true,
+            json: async () => [
+            {
+                id: 3,
+                name: "Cabernet Test Wine",
+                winery: "Test Winery",
+            },
+            ],
+        });
+
+        render(<DiscoveryPage />);
+
+        const input = screen.getByPlaceholderText(/search wines/i);
+        await user.type(input, "Cabernet");
+        await user.click(screen.getByRole("button", { name: /search/i }));
+
+        await waitFor(() => {
+        expect(global.fetch).toHaveBeenLastCalledWith(
+            expect.stringContaining("/api/wines?search=Cabernet")
+        );
+        });
+    });
 });
