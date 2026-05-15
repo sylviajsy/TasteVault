@@ -33,4 +33,20 @@ describe("Navbar", () => {
     expect(screen.getByText("TasteVault")).toBeInTheDocument();
     expect(screen.getByText(/Siyi/i)).toBeInTheDocument();
   });
+
+  test("navigation links have correct hrefs", async () => {
+    const user = userEvent.setup();
+
+    renderNavbar();
+
+    await user.hover(screen.getByRole("button", { name: /explore/i }));
+
+    expect(
+      await screen.findByRole("link", { name: /discovery page/i })
+    ).toHaveAttribute("href", "/");
+
+    expect(
+      await screen.findByRole("link", { name: /journal page/i })
+    ).toHaveAttribute("href", "/journal");
+  });
 });
