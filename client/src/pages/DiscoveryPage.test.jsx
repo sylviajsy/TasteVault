@@ -25,11 +25,15 @@ vi.mock("../components/GlobalSearchBar", () => ({
 }));
 
 vi.mock("../components/WineCard", () => ({
-  WineCard: ({ wine }) => <div>{wine.name}</div>,
+  WineCard: ({ wine, onSelect }) => (
+    <button type="button" onClick={() => onSelect(wine)}>
+      {wine.name}
+    </button>
+  ),
 }));
 
 vi.mock("../components/WineDetailModal", () => ({
-  WineDetailModal: () => <div>Mock Wine Detail Modal</div>,
+  WineDetailModal: ({ wine }) => <div>Wine Detail Modal: {wine.name}</div>,
 }));
 
 const mockWines = [
@@ -95,9 +99,34 @@ describe("DiscoveryPage", () => {
         await user.click(screen.getByRole("button", { name: /search/i }));
 
         await waitFor(() => {
-        expect(global.fetch).toHaveBeenLastCalledWith(
-            expect.stringContaining("/api/wines?search=Cabernet")
-        );
+            expect(global.fetch).toHaveBeenLastCalledWith(
+                expect.stringContaining("/api/wines?search=Cabernet")
+            );
         });
     });
+
+    test("opens wine detail modal", async () => {
+        const user = userEvent.setup();
+
+        global.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => [
+                {
+                id: 1,
+                name: "Opus One",
+                winery: "Opus One Winery",
+                },
+            ],
+        });
+
+        render(<DiscoveryPage />);
+
+        const wineButton = await screen.findByRole("button", { name: "Opus One" });
+        await user.click(wineButton);
+
+        expect(
+          await screen.findByText("Wine Detail Modal: Opus One")
+        ).toBeInTheDocument();
+    });
+
 });
