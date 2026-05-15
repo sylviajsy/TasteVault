@@ -8,7 +8,7 @@ export const mapJournalInputDTO = (body, userId) => {
         score: body.score,
         price: body.price,
         acidity: body.user_acidity ?? 5,
-        fizziness: body.user_fizziness ?? 5,
+        fizziness: body.user_fizziness ?? 0,
         intensity: body.user_intensity ?? 5,
         sweetness: body.user_sweetness ?? 5,
         tannin: body.user_tannin ?? 5,
