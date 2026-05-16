@@ -1,4 +1,14 @@
 export const WineCard = ({ wine, onSelect }) => {
+    if (!wine) {
+        return null;
+    }
+
+    const safeName = wine.name || "Unknown Wine";
+    const safeWinery = wine.winery || "Unknown Winery";
+    const safeRegion = wine.region || "Region unavailable";
+    const safePrice = wine.price || "N/A";
+    const safeYear = wine.year ? ` • ${wine.year}` : "";
+    const grapes = Array.isArray(wine.grapes) ? wine.grapes : [];
 
     const handleClick = () => {
         onSelect(wine);
@@ -11,7 +21,7 @@ export const WineCard = ({ wine, onSelect }) => {
         {wine.image_url ? (
           <img
             src={wine.image_url}
-            alt={wine.name}
+            alt={safeName}
             className="max-h-60 object-contain"
           />
         ) : (
@@ -24,14 +34,14 @@ export const WineCard = ({ wine, onSelect }) => {
       <div className="space-y-4 p-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wine-label">
-            {wine.region}
+            {safeRegion}
           </p>
           <h3 className="mt-2 text-xl font-semibold text-wine-text">
-            {wine.name}
+            {safeName}
           </h3>
           <p className="mt-1 text-sm text-wine-text-soft">
-            {wine.winery}
-            {wine.year}
+            {safeWinery}
+            {safeYear}
           </p>
         </div>
 
@@ -39,13 +49,13 @@ export const WineCard = ({ wine, onSelect }) => {
           <div className="rounded-2xl bg-wine-panel px-3 py-2">
             <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Price</p>
             <p className="mt-1 font-semibold text-wine-text">
-              {wine.price}
+              {safePrice}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {wine.grapes.slice(0, 3).map((grape) => (
+          {grapes.slice(0, 3).map((grape) => (
             <span
               key={grape}
               className="rounded-full border border-wine-border bg-wine-chip px-3 py-1 text-xs font-medium text-wine-burgundy"
