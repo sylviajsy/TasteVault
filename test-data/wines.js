@@ -7,7 +7,7 @@ export const mockWine = {
   flavors: [
     {
       group: "black_fruit",
-      notes: ["blackberry", "plum"],
+      notes: ["blackberry", "plum","black cherry","cassis"],
     },
   ],
   image_url: "https://example.com/wine.png",
@@ -23,7 +23,16 @@ export const mockWineSearchResult = {
   id: mockWine.id,
   name: mockWine.name,
   winery: mockWine.winery,
-  image_url: "",
+  year: mockWine.year,
+  grapes: mockWine.grapes,
+  flavors: mockWine.flavors,
+  image_url: mockWine.image_url,
+  region: mockWine.region,
+  price: mockWine.price,
+  acidity: mockWine.acidity,
+  tannin: mockWine.tannin,
+  intensity: mockWine.intensity,
+  sweetness: mockWine.sweetness,
 };
 
 export const mockWineSearchResults = [mockWineSearchResult];

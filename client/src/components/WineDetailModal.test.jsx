@@ -15,4 +15,6 @@ describe('Wine Detail Modal', () => {
         );
         expect(screen.getAllByText(/california/i)[0]).toBeInTheDocument();
     })
+
+    
 })
