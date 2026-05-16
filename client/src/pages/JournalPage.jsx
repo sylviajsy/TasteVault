@@ -88,7 +88,7 @@ export const JournalPage = () => {
         </div>
 
         <button
-          className="mt-8 rounded-full bg-wine-burgundy px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-wine-ivory transition hover:bg-wine-burgundy-dark"
+          className="fixed bottom-6 right-6 z-40 rounded-full bg-wine-burgundy px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-wine-ivory shadow-wine-card transition hover:bg-wine-burgundy-dark"
           onClick={() => setIsAddNoteOpen(true)}
         >
           Add Tasting Note
