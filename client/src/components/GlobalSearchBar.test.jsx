@@ -48,4 +48,24 @@ describe('Global Search Bar', () => {
         // assert callback
         expect(onSearch).toHaveBeenCalledWith("Cabernet");
     });
+
+    test("does not call onSearch for empty input", () => {
+        vi.useFakeTimers();
+
+        const onSearch = vi.fn();
+
+        render(
+            <GlobalSearchBar
+            value="   "
+            onChange={vi.fn()}
+            onSearch={onSearch}
+            />
+        );
+
+        vi.advanceTimersByTime(500);
+
+        expect(onSearch).not.toHaveBeenCalled();
+
+        vi.useRealTimers();
+    });
 })
