@@ -2,6 +2,10 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { DiscoveryPage } from "./DiscoveryPage";
+import {
+  mockWineSearchResult,
+  mockWineSearchResults,
+} from "../../../test-data/wines.js";
 
 vi.mock("react-toastify", () => ({
   toast: {
@@ -36,19 +40,6 @@ vi.mock("../components/WineDetailModal", () => ({
   WineDetailModal: ({ wine }) => <div>Wine Detail Modal: {wine.name}</div>,
 }));
 
-const mockWines = [
-            {
-            id: 1,
-            name: "Opus One",
-            winery: "Opus One Winery",
-            },
-            {
-            id: 2,
-            name: "Cakebread Cabernet",
-            winery: "Cakebread Cellars",
-            },
-        ]
-
 describe("DiscoveryPage", () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -58,7 +49,7 @@ describe("DiscoveryPage", () => {
     test("renders wines after fetch", async () => {
         global.fetch.mockResolvedValueOnce({
             ok: true,
-            json: async () => mockWines,
+            json: async () => mockWineSearchResults,
         });
 
         render(<DiscoveryPage />);
@@ -69,8 +60,7 @@ describe("DiscoveryPage", () => {
             );
         });
 
-        expect(await screen.findByText("Opus One")).toBeInTheDocument();
-        expect(await screen.findByText("Cakebread Cabernet")).toBeInTheDocument();
+        expect(await screen.findByText(mockWineSearchResult.name)).toBeInTheDocument();
     });
 
     test("fetches wines when searching", async () => {
@@ -83,13 +73,7 @@ describe("DiscoveryPage", () => {
         })
         .mockResolvedValueOnce({
             ok: true,
-            json: async () => [
-            {
-                id: 3,
-                name: "Cabernet Test Wine",
-                winery: "Test Winery",
-            },
-            ],
+            json: async () => mockWineSearchResults,
         });
 
         render(<DiscoveryPage />);
@@ -110,22 +94,18 @@ describe("DiscoveryPage", () => {
 
         global.fetch.mockResolvedValueOnce({
             ok: true,
-            json: async () => [
-                {
-                id: 1,
-                name: "Opus One",
-                winery: "Opus One Winery",
-                },
-            ],
+            json: async () => mockWineSearchResults,
         });
 
         render(<DiscoveryPage />);
 
-        const wineButton = await screen.findByRole("button", { name: "Opus One" });
+        const wineButton = await screen.findByRole("button", {
+          name: mockWineSearchResult.name,
+        });
         await user.click(wineButton);
 
         expect(
-          await screen.findByText("Wine Detail Modal: Opus One")
+          await screen.findByText(`Wine Detail Modal: ${mockWineSearchResult.name}`)
         ).toBeInTheDocument();
     });
 

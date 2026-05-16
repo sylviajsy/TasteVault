@@ -1,21 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import { WineDetailModal } from "./WineDetailModal";
-
-const mockWine = {
-    id: 101,
-    name: "Dark Horse Cabernet",
-    winery: "Dark Horse",
-    grapes: ["Cabernet Sauvignon", "Merlot"],
-    flavors: [
-        {
-        group: "black_fruit",
-        notes: ["blackberry", "plum"],
-        },
-    ],
-    image_url: "https://example.com/wine.png",
-    region: "California, United States",
-};
+import { mockWine } from "../../../test-data/wines.js";
 
 describe('Wine Detail Modal', () => {
     test("Renders wine details", () => {
