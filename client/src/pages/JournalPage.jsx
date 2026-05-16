@@ -40,6 +40,7 @@ export const JournalPage = () => {
   useEffect(() => {
     loadNote();
   }, [])
+
   return (
     <div>
         <h1>JournalPage</h1>
@@ -62,6 +63,7 @@ export const JournalPage = () => {
               <div>
                 <h2>{note.wine.name}</h2>
                 <h2>{note.userStats.score}</h2>
+                <h2>{note.date}</h2>
               </div>
           </div>
         ))}
