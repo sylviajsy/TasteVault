@@ -26,4 +26,24 @@ describe('Wine Card', () => {
 
         expect(onSelect).toHaveBeenCalledWith(mockWine);
     })
+
+    test("returns nothing when wine is missing", () => {
+        const { container } = render(<WineCard wine={null} onSelect={vi.fn()} />);
+
+        expect(container.firstChild).toBeNull();
+    });
+
+    test("renders fallback values for incomplete wine data", () => {
+        const partialWine = {
+            id: 999,
+            grapes: null,
+        };
+
+        render(<WineCard wine={partialWine} onSelect={vi.fn()} />);
+
+        expect(screen.getByText("Unknown Wine")).toBeInTheDocument();
+        expect(screen.getByText("Unknown Winery")).toBeInTheDocument();
+        expect(screen.getByText("Region unavailable")).toBeInTheDocument();
+        expect(screen.getByText("N/A")).toBeInTheDocument();
+    });
 })

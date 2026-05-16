@@ -23,4 +23,26 @@ describe('Wine Detail Modal', () => {
         expect(screen.getByText("blackberry")).toBeInTheDocument();
         expect(screen.getByText("plum")).toBeInTheDocument();
     });
+
+    test("returns nothing when wine is missing", () => {
+        const { container } = render(<WineDetailModal wine={null} onClose={vi.fn()} />);
+
+        expect(container.firstChild).toBeNull();
+    });
+
+    test("renders fallback values for incomplete wine data", () => {
+        const partialWine = {
+            image_url: "",
+            grapes: null,
+            flavors: null,
+        };
+
+        render(<WineDetailModal wine={partialWine} onClose={vi.fn()} />);
+
+        expect(screen.getByText("Unknown Wine")).toBeInTheDocument();
+        expect(screen.getByText("Unknown Winery")).toBeInTheDocument();
+        expect(screen.getAllByText("Region unavailable")).toHaveLength(2);
+        expect(screen.getAllByText("N/A").length).toBeGreaterThan(0);
+        expect(screen.getByText("Taste Vault")).toBeInTheDocument();
+    });
 })
