@@ -16,5 +16,11 @@ describe('Wine Detail Modal', () => {
         expect(screen.getAllByText(/california/i)[0]).toBeInTheDocument();
     })
 
-    
+    test("renders mock flavors from test data", () => {
+        render(<WineDetailModal wine={mockWine} onClose={vi.fn()} />);
+
+        expect(screen.getByText(/black_fruit/i)).toBeInTheDocument();
+        expect(screen.getByText("blackberry")).toBeInTheDocument();
+        expect(screen.getByText("plum")).toBeInTheDocument();
+    });
 })
