@@ -8,9 +8,9 @@ const router = express.Router();
 router.get('/', authMiddleware, async (req, res) => {
     try {
         const userId = req.user.id;
+        const search = req.query.search?.trim();
 
-        const result = await pool.query(
-        `
+        let query = `
             SELECT
                 tn.*,
                 w.name,
@@ -20,10 +20,29 @@ router.get('/', authMiddleware, async (req, res) => {
             FROM tasting_notes tn
             JOIN wines w ON tn.wine_id = w.wine_id
             WHERE tn.user_id = $1
+        `
+        const values = [userId];
+
+        if (search) {
+            query += `
+                AND (
+                    w.name ILIKE $2
+                    OR w.winery ILIKE $2
+                    OR tn.comment ILIKE $2
+                )
+            `;
+
+            values.push(`%${search}%`);
+        }
+
+        query += `
             ORDER BY tn.created_at DESC
-        `,
-        [userId]
+        `;
+
+        const result = await pool.query(
+            query, values
         );
+
         const response = result.rows.map(mapJournalOutputDTO);
 
         res.json(response);
