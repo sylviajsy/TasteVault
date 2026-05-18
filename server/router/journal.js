@@ -33,6 +33,40 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 })
 
+router.get('/:id', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const noteId = req.params.id;
+
+        const result = await pool.query(
+        `
+            SELECT
+                tn.*,
+                w.name,
+                w.winery,
+                w.image_url,
+                w.region_display
+            FROM tasting_notes tn
+            JOIN wines w ON tn.wine_id = w.wine_id
+            WHERE tn.id = $1
+              AND tn.user_id = $2
+        `,
+        [noteId, userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Tasting note not found" });
+        }
+
+        const response = mapJournalOutputDTO(result.rows[0]);
+
+        res.json(response);
+    } catch (error) {
+        console.error("GET /api/journal/:id failed:", error);
+        res.status(500).json({ error: "Failed to fetch tasting note" });
+    }
+})
+
 router.post('/', authMiddleware, async (req, res) => {
     try {
         const userId = req.user.id;
