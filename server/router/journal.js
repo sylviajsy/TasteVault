@@ -43,6 +43,10 @@ router.get('/', authMiddleware, async (req, res) => {
             query, values
         );
 
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "No journal found!" });
+        }
+
         const response = result.rows.map(mapJournalOutputDTO);
 
         res.json(response);
@@ -74,7 +78,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Tasting note not found" });
+            return res.status(404).json({ error: "No result returned" });
         }
 
         const response = mapJournalOutputDTO(result.rows[0]);
