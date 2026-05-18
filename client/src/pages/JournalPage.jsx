@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { AddNoteModal } from '../components/AddNoteModal'
 import { JournalCard } from "../components/JournalCard";
+import { JournalDetailModal } from "../components/JournalDetailModal";
 
 export const JournalPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -43,7 +44,11 @@ export const JournalPage = () => {
   }, [])
 
   const handleSelectedJournal = (note) => {
-        setSelectedJournal(note);
+    setSelectedJournal(note);
+  }
+
+  const handleCloseModal = () => {
+    setSelectedJournal(null);
   }
 
   return (
@@ -57,13 +62,19 @@ export const JournalPage = () => {
         )}
 
         <div className="space-y-6">
-        {journal.map((note) => (
-          <JournalCard
-            key={note.noteId}
-            note={note}
-            onSelect={handleSelectedJournal}
-          />
-        ))}
+          {journal.map((note) => (
+            <JournalCard
+              key={note.noteId}
+              note={note}
+              onSelect={handleSelectedJournal}
+            />
+          ))}
+        </div>
+
+        <div>
+          {selectedJournal && (
+            <JournalDetailModal journal={selectedJournal} onClose={handleCloseModal}/>
+          ) }
         </div>
 
         <button
