@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { AddNoteModal } from '../components/AddNoteModal'
+import { AddNoteModal } from '../components/AddNoteModal';
+import { GlobalSearchBar } from "../components/GlobalSearchBar";
 import { JournalCard } from "../components/JournalCard";
 import { JournalDetailModal } from "../components/JournalDetailModal";
 
@@ -11,14 +12,16 @@ export const JournalPage = () => {
   const [journal, setJournal] = useState([]);
   const [selectedJournal, setSelectedJournal] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
 
-  const loadNote = async () => {
+  const loadNote = async (searchTerm="") => {
+    const search = searchTerm.replace(/\s+/g, " ").trim();
     try {
       setLoading(true);
 
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`${API_URL}/api/journal`, {
+      const res = await fetch(`${API_URL}/api/journal?search=${encodeURIComponent(search)}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -60,6 +63,8 @@ export const JournalPage = () => {
         {!loading && journal.length === 0 && (
           <p className="text-wine-text-soft">No tasting notes yet. Add your first tasting note!</p>
         )}
+
+        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadNote}/>
 
         <div className="space-y-6">
           {journal.map((note) => (
