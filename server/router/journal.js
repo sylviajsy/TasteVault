@@ -29,9 +29,9 @@ router.get('/', authMiddleware, async (req, res) => {
                     w.name ILIKE $2
                     OR w.winery ILIKE $2
                     OR tn.comment ILIKE $2
+                    OR tn.user_flavor::text ILIKE $2
                 )
             `;
-
             values.push(`%${search}%`);
         }
 
