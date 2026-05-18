@@ -53,4 +53,15 @@ describe('Journal Routes', () => {
         expect(res.statusCode).toBe(200);
         expect(pool.query).toHaveBeenCalledTimes(1);
     })
+
+    test('GET /api/journal returns no result returned when empty', async () => {
+        pool.query.mockResolvedValueOnce({
+            rows: [],
+        });
+
+        const res = await request(app).get("/api/journal");
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body).toEqual({ error: "No journal found!" });
+    })
 })
