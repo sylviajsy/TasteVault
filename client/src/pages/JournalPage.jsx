@@ -42,6 +42,10 @@ export const JournalPage = () => {
     loadNote();
   }, [])
 
+  const handleSelectedJournal = (note) => {
+        setSelectedJournal(note);
+  }
+
   return (
     <div className="px-4 pb-10 md:px-6">
         <h1>JournalPage</h1>
@@ -57,6 +61,7 @@ export const JournalPage = () => {
           <JournalCard
             key={note.noteId}
             note={note}
+            onSelect={handleSelectedJournal}
           />
         ))}
         </div>
