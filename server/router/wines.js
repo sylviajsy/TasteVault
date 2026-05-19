@@ -32,23 +32,38 @@ const mapToWineDTO = (wine) => {
 router.get('/', async (req, res) => {
 
   const { search } = req.query;
+  const limit = Number(req.query.limit) || 24;
+  const offset = Number(req.query.offset) || 0;
+
+  const values = [];
+  let whereClause = "";
 
   try {
-    let result;
-
     if (search) {
-      result = await pool.query(
-        `
-        SELECT * FROM wines
+      values.push(`%${search}%`);
+      whereClause = `
         WHERE name ILIKE $1
-           OR winery ILIKE $1
-           OR region_display ILIKE $1
-        `,
-        [`%${search}%`]
-      );
-    } else {
-      result = await pool.query('SELECT * FROM wines ORDER BY wine_id');
+        OR winery ILIKE $1
+        OR region_display ILIKE $1
+      `;
     }
+
+    values.push(limit, offset);
+    const limitParam = values.length - 1;
+    const offsetParam = values.length;
+
+    const result = await pool.query(
+      `
+        SELECT *
+        FROM wines
+        ${whereClause}
+        ORDER BY name
+        LIMIT $${limitParam}
+        OFFSET $${offsetParam}
+      `,
+      values
+    );
+
     const winesDTO = result.rows.map(mapToWineDTO);
 
     res.status(200).json(winesDTO);
