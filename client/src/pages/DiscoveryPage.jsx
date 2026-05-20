@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { toast } from 'react-toastify';
 import { WineCard } from '../components/WineCard';
 import { WineDetailModal } from '../components/WineDetailModal';
@@ -10,39 +10,52 @@ export const DiscoveryPage = () => {
     const [wines, setWines] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedWine, setSelectedWine] = useState(null);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);  
     const [query, setQuery] = useState("");
+    const loaderRef = useRef(null);
+    const limit = 24;
 
-    const loadWines = async (searchTerm = "") => {
-        // Search input cleanup
-        const search = searchTerm.replace(/\s+/g, " ").trim();
+    const loadWines = useCallback(
+        async (searchTerm = "", pageNumber = 0, replace = false) => {
+            // Search input cleanup
+            const search = searchTerm.replace(/\s+/g, " ").trim();
 
-        try {
-            setLoading(true);
+            try {
+                setLoading(true);
 
-            const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(search)}`);
-            const data = await res.json();
+                const offset = pageNumber * limit;
 
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to fetch wines');
+                const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(search)}&limit=${limit}&offset=${offset}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to fetch wines');
+                }
+
+                setWines((prev) => (replace ? data : [...prev, ...data]));
+                console.log('Wines', data);
+            } catch (error) {
+                console.error(error);
+                toast.error(error.message);
+            }  finally {
+                setLoading(false);
             }
-
-            setWines(data);
-            console.log('Wines', data);
-        } catch (error) {
-            console.error(error);
-            toast.error(error.message);
-        }  finally {
-            setLoading(false);
-        }
-    }
+    }, [API_URL, loading])
 
     useEffect(() => {
-        loadWines();
+        loadWines("", 0, true);
     },[])
 
     const handleSelectedWine = (wine) => {
         setSelectedWine(wine);
     }
+
+    const handleSearch = (value) => {
+        setPage(0);
+        setHasMore(true);
+        loadWines(value, 0, true);
+    };
 
     const handleCloseModal = () => {
         setSelectedWine(null);
@@ -56,7 +69,7 @@ export const DiscoveryPage = () => {
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadWines}/>
+        <GlobalSearchBar value={query} onChange={setQuery} onSearch={handleSearch}/>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 
