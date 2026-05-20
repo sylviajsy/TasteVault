@@ -13,6 +13,7 @@ export const DiscoveryPage = () => {
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);  
     const [query, setQuery] = useState("");
+    // Create a ref to anchor the loaderRef element at the bottom of the list
     const loaderRef = useRef(null);
     const limit = 24;
 
@@ -20,6 +21,8 @@ export const DiscoveryPage = () => {
         async (searchTerm = "", pageNumber = 0, replace = false) => {
             // Search input cleanup
             const search = searchTerm.replace(/\s+/g, " ").trim();
+
+            if (stateRef.current.loading) return;
 
             try {
                 setLoading(true);
@@ -34,6 +37,7 @@ export const DiscoveryPage = () => {
                 }
 
                 setWines((prev) => (replace ? data : [...prev, ...data]));
+                setHasMore(data.length === limit);
                 console.log('Wines', data);
             } catch (error) {
                 console.error(error);
@@ -41,11 +45,53 @@ export const DiscoveryPage = () => {
             }  finally {
                 setLoading(false);
             }
-    }, [API_URL, loading])
+    }, [API_URL])
 
     useEffect(() => {
-        loadWines("", 0, true);
-    },[])
+        const isReplace = page === 0;
+        loadWines(query, page, isReplace);
+    },[page, query, loadWines])
+
+    // New search query, page = 0
+    useEffect(() => {
+        setPage(0);
+        setHasMore(true);
+    }, [query]);
+
+    const stateRef = useRef({ page, query, hasMore, loading });
+    useEffect(() => {
+        stateRef.current = { page, query, hasMore, loading };
+    }, [page, query, hasMore, loading]);
+
+    // Infinite scroll observer
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            // entries[0] represents the loaderRef element we are tracking
+            const firstEntry = entries[0];
+            const { hasMore: currentHasMore, loading: currentLoading, page: currentGlobalPage } = stateRef.current;
+
+            if (firstEntry.isIntersecting && currentHasMore && !currentLoading) {
+                // Increment page to trigger the fetch useEffect
+                setPage(currentGlobalPage + 1);
+            }
+        }, {
+            threshold: 0.1, // Trigger the callback when 10% of the sentinel is visible
+        })
+
+        const currentLoader = loaderRef.current;
+
+        // Start observing the loaderRef element at the bottom
+        if (currentLoader) {
+            observer.observe(currentLoader);
+        }
+
+        // Cleanup: disconnect the observer on unmount to prevent memory leaks
+        return () => {
+            if (currentLoader) {
+                observer.unobserve(currentLoader);
+            }
+        }
+    }, [])
 
     const handleSelectedWine = (wine) => {
         setSelectedWine(wine);
@@ -87,6 +133,21 @@ export const DiscoveryPage = () => {
                 />
             )}
         </div>
+
+        {/* IntersectionObserver */}
+        <div ref={loaderRef} className="h-10" />
+
+        {loading && (
+            <p className="mt-4 text-center text-[#6f102e]">
+                Loading more wines...
+            </p>
+        )}
+
+        {!hasMore && (
+            <p className="mt-4 text-center text-[#7a4c43]">
+                No more wines.
+            </p>
+        )}
     </div>
   )
 }
