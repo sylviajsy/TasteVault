@@ -65,6 +65,9 @@ describe("Wines Routes", () => {
         ],
       },
     ]);
-    expect(pool.query).toHaveBeenCalledWith("SELECT * FROM wines ORDER BY wine_id");
+    expect(pool.query).toHaveBeenCalledWith(
+      expect.stringContaining("LIMIT $1"),
+      [24, 0]
+    );
   });
 });

@@ -47,6 +47,7 @@ export const DiscoveryPage = () => {
             }
     }, [API_URL])
 
+    // To next page
     useEffect(() => {
         const isReplace = page === 0;
         loadWines(query, page, isReplace);
