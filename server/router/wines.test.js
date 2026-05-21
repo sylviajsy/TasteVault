@@ -74,4 +74,19 @@ describe("Wines Routes", () => {
       [24, 0]
     );
   });
+
+  test("GET /api/wines supports search query", async() => {
+    pool.query.mockResolvedValueOnce({
+      rows: [mockWine],
+    });
+
+    const res = await request(app).get("/api/wines?search=test");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual([mappedWine]);
+    expect(pool.query).toHaveBeenCalledWith(
+      expect.stringContaining("ILIKE $1"),
+      ["%test%", 24, 0]
+    );
+  })
 });
