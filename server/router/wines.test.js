@@ -69,5 +69,9 @@ describe("Wines Routes", () => {
       expect.stringContaining("LIMIT $1"),
       [24, 0]
     );
+    expect(pool.query).toHaveBeenCalledWith(
+      expect.stringContaining("OFFSET $2"),
+      [24, 0]
+    );
   });
 });
