@@ -18,4 +18,12 @@ describe("Journal Detail Modal", () => {
         expect(screen.getByText(/oak/i)).toBeInTheDocument();
         expect(screen.getByText(/Bright acidity and smooth finish/i)).toBeInTheDocument();
     })
+
+    test("renders nothing when journal is null", () => {
+        const { container } = render(
+        <JournalDetailModal journal={null} onClose={vi.fn()} />
+        );
+
+        expect(container).toBeEmptyDOMElement();
+    });
 })
