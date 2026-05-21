@@ -26,4 +26,15 @@ describe("Journal Detail Modal", () => {
 
         expect(container).toBeEmptyDOMElement();
     });
+
+    test("calls onClose when close button is clicked", async () => {
+        const user = userEvent.setup();
+        const onClose = vi.fn();
+
+        render(<JournalDetailModal journal={mockJournal} onClose={onClose} />);
+
+        await user.click(screen.getByRole("button", { name: /close modal/i, }));
+
+        expect(onClose).toHaveBeenCalled();
+    });
 })

@@ -29,6 +29,7 @@ export const JournalDetailModal = ({ journal, onClose }) => {
       >
         <button
           type="button"
+          aria-label="Close modal"
           className="sticky top-4 z-20 ml-auto mr-4 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-wine-burgundy text-lg font-semibold text-wine-ivory transition hover:bg-wine-burgundy-dark"
           onClick={onClose}
         >
