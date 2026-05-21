@@ -74,7 +74,7 @@ export const JournalDetailModal = ({ journal, onClose }) => {
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Score</p>
                 <p className="mt-1 font-semibold text-wine-text">{scaleOr(userStats.score)}</p>
@@ -83,6 +83,9 @@ export const JournalDetailModal = ({ journal, onClose }) => {
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Price</p>
                 <p className="mt-1 font-semibold text-wine-text">{textOr(userStats.price)}</p>
               </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Acidity</p>
                 <p className="mt-1 font-semibold text-wine-text">{scaleOr(userStats.acidity)}</p>
@@ -99,7 +102,7 @@ export const JournalDetailModal = ({ journal, onClose }) => {
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Sweetness</p>
                 <p className="mt-1 font-semibold text-wine-text">{scaleOr(userStats.sweetness)}</p>
               </div>
-              <div className="rounded-2xl bg-wine-panel px-4 py-3 sm:col-span-2 lg:col-span-1">
+              <div className="rounded-2xl bg-wine-panel px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Tannin</p>
                 <p className="mt-1 font-semibold text-wine-text">{scaleOr(userStats.tannin)}</p>
               </div>
