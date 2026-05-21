@@ -9,7 +9,7 @@ export const JournalCard = ({ note, onSelect }) => {
     };
 
   return (
-    <article onClick={handleClick} className="grid gap-5 rounded-[2rem] bg-transparent p-2 text-left md:grid-cols-[140px_1fr]">
+    <article onClick={handleClick} data-testid="journal-card" className="grid gap-5 rounded-[2rem] bg-transparent p-2 text-left md:grid-cols-[140px_1fr]">
       <div className="px-4 py-5 text-center">
         <p className="mt-2 text-lg font-semibold text-wine-burgundy">
           {note.date}
