@@ -32,6 +32,7 @@ Example:
 ```env
 DATABASE_URL=your_database_url
 OPENAI_API_KEY=your_openai_api_key
+REDIS_URL=your_redis_url_here
 ```
 
 Create a `.env` file in `client/` and add:
