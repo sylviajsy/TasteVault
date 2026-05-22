@@ -58,10 +58,10 @@ export const JournalPage = () => {
     <div className="px-4 pb-10 md:px-6">
         <h1>JournalPage</h1>
 
-        {loading && <p className="text-wine-burgundy">Loading journal...</p>}
+        {loading && <p className="text-brand">Loading journal...</p>}
 
         {!loading && journal.length === 0 && (
-          <p className="text-wine-text-soft">No tasting notes yet. Add your first tasting note!</p>
+          <p className="text-text-soft">No tasting notes yet. Add your first tasting note!</p>
         )}
 
         <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadNote}/>
@@ -83,7 +83,7 @@ export const JournalPage = () => {
         </div>
 
         <button
-          className="fixed bottom-6 right-6 z-40 rounded-full bg-wine-burgundy px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-wine-ivory shadow-wine-card transition hover:bg-wine-burgundy-dark"
+          className="fixed bottom-6 right-6 z-40 rounded-full bg-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-contrast shadow-card transition hover:bg-brand-strong"
           onClick={() => setIsAddNoteOpen(true)}
         >
           Add Tasting Note

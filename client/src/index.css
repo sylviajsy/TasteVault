@@ -2,18 +2,49 @@
 @import "tailwindcss";
 
 :root {
-  --text: #6b4b4b;
+  --color-brand: #6f102e;
+  --color-brand-strong: #581024;
+  --color-brand-soft: #7a1733;
+  --color-ring: #9f5066;
+  --color-surface: #fff8ef;
+  --color-surface-soft: #f8f1e7;
+  --color-surface-deep: #f2e2d6;
+  --color-canvas: #f6ede2;
+  --color-tint: #f8e6da;
+  --color-accent: #f2d4ca;
+  --color-panel: #f7ede3;
+  --color-chip: #fff3e8;
+  --color-contrast: #fff9f2;
+  --color-border: #dcc4ba;
+  --color-border-soft: #d3b8ad;
+  --color-border-strong: #cfae9d;
+  --color-divider: #ead7ce;
+  --color-text: #5b1228;
+  --color-text-soft: #7a4c43;
+  --color-muted: #6b4b4b;
+  --color-label: #8f5a4c;
+  --color-placeholder: #9b7567;
+  --color-overlay: #3d0b1a;
+
+  --text: var(--color-muted);
   --text-h: #4a1023;
-  --bg: #f6ede2;
+  --bg: var(--color-canvas);
   --border: #ddc9be;
   --code-bg: #efe2d6;
-  --accent: #7a1733;
+  --accent-text: var(--color-brand-soft);
   --accent-bg: rgba(122, 23, 51, 0.1);
   --accent-border: rgba(122, 23, 51, 0.35);
   --social-bg: rgba(248, 241, 231, 0.85);
+
   --shadow:
     rgba(74, 16, 35, 0.12) 0 10px 15px -3px,
     rgba(74, 16, 35, 0.08) 0 4px 6px -2px;
+  --shadow-shell: 0 10px 30px rgba(96, 17, 40, 0.12);
+  --shadow-popover: 0 16px 34px rgba(96, 17, 40, 0.16);
+  --shadow-card: 0 16px 36px rgba(96, 17, 40, 0.10);
+  --shadow-card-hover: 0 20px 40px rgba(96, 17, 40, 0.16);
+  --shadow-input: 0 12px 28px rgba(96, 17, 40, 0.08);
+  --shadow-modal: 0 30px 80px rgba(61, 11, 26, 0.28);
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -28,6 +59,39 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme="chardonnay"] {
+  --color-brand: #55733b;
+  --color-brand-strong: #435d2e;
+  --color-brand-soft: #6f8f4d;
+  --color-ring: #93ad63;
+  --color-surface: #fff8e0;
+  --color-surface-soft: #fbf4dd;
+  --color-surface-deep: #f3e6bb;
+  --color-canvas: #f8f1d3;
+  --color-tint: #f3e8ba;
+  --color-accent: #ebdd9a;
+  --color-panel: #f8efca;
+  --color-chip: #fff7dc;
+  --color-contrast: #fffdf2;
+  --color-border: #d8c995;
+  --color-border-soft: #cbbd89;
+  --color-border-strong: #bba967;
+  --color-divider: #e8ddb5;
+  --color-text: #4d4427;
+  --color-text-soft: #6f6644;
+  --color-muted: #736845;
+  --color-label: #8b7c52;
+  --color-placeholder: #9c8d63;
+  --color-overlay: #2c2a15;
+
+  --shadow-shell: 0 10px 30px rgba(85, 115, 59, 0.12);
+  --shadow-popover: 0 16px 34px rgba(85, 115, 59, 0.16);
+  --shadow-card: 0 16px 36px rgba(85, 115, 59, 0.10);
+  --shadow-card-hover: 0 20px 40px rgba(85, 115, 59, 0.16);
+  --shadow-input: 0 12px 28px rgba(85, 115, 59, 0.08);
+  --shadow-modal: 0 30px 80px rgba(44, 42, 21, 0.26);
 }
 
 @media (max-width: 1024px) {
@@ -95,4 +159,38 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+@layer components {
+  .ui-card {
+    @apply rounded-[2rem] border border-border bg-surface shadow-card;
+  }
+
+  .ui-panel {
+    @apply rounded-2xl bg-panel px-4 py-3;
+  }
+
+  .ui-chip {
+    @apply rounded-full border border-border bg-chip px-3 py-1 text-xs font-medium text-text-soft;
+  }
+
+  .ui-tag {
+    @apply rounded-full bg-brand px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-contrast;
+  }
+
+  .ui-button-primary {
+    @apply rounded-full border border-brand bg-brand px-5 py-2 text-sm font-semibold text-contrast transition hover:bg-brand-strong focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-surface-soft;
+  }
+
+  .ui-floating-button {
+    @apply fixed bottom-6 right-6 z-40 rounded-full bg-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-contrast shadow-card transition hover:bg-brand-strong;
+  }
+
+  .ui-modal-shell {
+    @apply relative max-h-[90vh] w-full overflow-y-auto rounded-[2rem] border border-border bg-surface text-left shadow-modal;
+  }
+
+  .ui-close-button {
+    @apply sticky top-4 z-20 ml-auto mr-4 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand text-lg font-semibold text-contrast transition hover:bg-brand-strong;
+  }
 }

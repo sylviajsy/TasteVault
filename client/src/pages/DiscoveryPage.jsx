@@ -112,7 +112,7 @@ export const DiscoveryPage = () => {
     <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
         {loading && (
-          <p className="mb-4 text-wine-burgundy">
+          <p className="mb-4 text-brand">
             Loading wines...
           </p>
         )}
@@ -139,13 +139,13 @@ export const DiscoveryPage = () => {
         <div ref={loaderRef} className="h-10" />
 
         {loading && (
-            <p className="mt-4 text-center text-[#6f102e]">
+            <p className="mt-4 text-center text-brand">
                 Loading more wines...
             </p>
         )}
 
         {!hasMore && (
-            <p className="mt-4 text-center text-[#7a4c43]">
+            <p className="mt-4 text-center text-text-soft">
                 No more wines.
             </p>
         )}
