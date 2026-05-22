@@ -48,6 +48,7 @@ VITE_API_URL=http://localhost:3001
 From `server/`:
 
 ```bash
+brew services start redis
 npm start
 ```
 

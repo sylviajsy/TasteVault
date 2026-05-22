@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/connection.js';
 import { fixUrl } from "../helpers/url.js";
+import redisClient from "../db/redis.js";
 
 const router = express.Router();
 
@@ -30,26 +31,61 @@ const mapToWineDTO = (wine) => {
 }
 
 router.get('/', async (req, res) => {
-
-  const { search } = req.query;
-
   try {
-    let result;
+    const search = req.query.search?.trim() || "";
+    const limit = Number(req.query.limit) || 24;
+    const offset = Number(req.query.offset) || 0;
+
+    // Create a unique Redis cache key, prevents different searches/pages from overwriting each other
+    const cacheKey = `wines:search:${search}:limit:${limit}:offset:${offset}`;
+    const cached = await redisClient.get(cacheKey);
+
+    // Try to get cached wine results from Redis first
+    if (cached) {
+      return res.status(200).json(JSON.parse(cached));
+    }
+
+    const values = [];
+    let whereClause = "";
 
     if (search) {
-      result = await pool.query(
-        `
-        SELECT * FROM wines
+      values.push(`%${search}%`);
+
+      whereClause = `
         WHERE name ILIKE $1
            OR winery ILIKE $1
            OR region_display ILIKE $1
-        `,
-        [`%${search}%`]
-      );
-    } else {
-      result = await pool.query('SELECT * FROM wines ORDER BY wine_id');
+      `;
     }
+
+     // Add pagination parameters
+    values.push(limit, offset);
+
+    const limitParam = values.length - 1;
+    const offsetParam = values.length;
+
+    const result = await pool.query(
+      `
+        SELECT *
+        FROM wines
+        ${whereClause}
+        ORDER BY name
+        LIMIT $${limitParam}
+        OFFSET $${offsetParam}
+      `,
+      values
+    );
+
     const winesDTO = result.rows.map(mapToWineDTO);
+    
+    // Save mapped results into Redis cache
+    // setEx = set with expiration time
+    // Cache expires after 10 minutes
+    await redisClient.setEx(
+      cacheKey,
+      60 * 10,
+      JSON.stringify(winesDTO)
+    );
 
     res.status(200).json(winesDTO);
   } catch (error) {
