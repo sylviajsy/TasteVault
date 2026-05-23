@@ -179,6 +179,15 @@ export const AddNoteModal = ({ onClose }) => {
     );
 
     const toggleGroup = (groupName) => {
+        if (selectedGroups.includes(groupName)) {
+            setFormData((prev) => ({
+                ...prev,
+                user_flavor: prev.user_flavor.filter(
+                    (item) => item.group !== groupName
+                ),
+            }));
+        }
+
         setSelectedGroups((prev) =>
             prev.includes(groupName)
             ? prev.filter((group) => group !== groupName)

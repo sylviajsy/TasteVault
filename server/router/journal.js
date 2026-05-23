@@ -8,6 +8,58 @@ const router = express.Router();
 router.get('/', authMiddleware, async (req, res) => {
     try {
         const userId = req.user.id;
+        const search = req.query.search?.trim();
+
+        let query = `
+            SELECT
+                tn.*,
+                w.name,
+                w.winery,
+                w.image_url,
+                w.region_display
+            FROM tasting_notes tn
+            JOIN wines w ON tn.wine_id = w.wine_id
+            WHERE tn.user_id = $1
+        `
+        const values = [userId];
+
+        if (search) {
+            query += `
+                AND (
+                    w.name ILIKE $2
+                    OR w.winery ILIKE $2
+                    OR tn.comment ILIKE $2
+                    OR tn.user_flavor::text ILIKE $2
+                )
+            `;
+            values.push(`%${search}%`);
+        }
+
+        query += `
+            ORDER BY tn.created_at DESC
+        `;
+
+        const result = await pool.query(
+            query, values
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "No journal found!" });
+        }
+
+        const response = result.rows.map(mapJournalOutputDTO);
+
+        res.json(response);
+    } catch (error) {
+        console.error("GET /api/journal failed:", error);
+        res.status(500).json({ error: "Failed to fetch journal" });
+    }
+})
+
+router.get('/:id', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const noteId = req.params.id;
 
         const result = await pool.query(
         `
@@ -19,17 +71,22 @@ router.get('/', authMiddleware, async (req, res) => {
                 w.region_display
             FROM tasting_notes tn
             JOIN wines w ON tn.wine_id = w.wine_id
-            WHERE tn.user_id = $1
-            ORDER BY tn.created_at DESC
+            WHERE tn.id = $1
+              AND tn.user_id = $2
         `,
-        [userId]
+        [noteId, userId]
         );
-        const response = result.rows.map(mapJournalOutputDTO);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "No result returned" });
+        }
+
+        const response = mapJournalOutputDTO(result.rows[0]);
 
         res.json(response);
     } catch (error) {
-        console.error("GET /api/journal failed:", error);
-        res.status(500).json({ error: "Failed to fetch journal" });
+        console.error("GET /api/journal/:id failed:", error);
+        res.status(500).json({ error: "Failed to fetch tasting note" });
     }
 })
 

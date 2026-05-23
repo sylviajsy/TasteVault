@@ -1,7 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { AddNoteModal } from "./AddNoteModal";
+import { mockWineSearchResult, mockWineSearchResults } from "../../../test-data/wines.js";
 
 vi.mock("react-toastify", () => ({
   toast: {
@@ -12,10 +14,6 @@ vi.mock("react-toastify", () => ({
 
 const mockTags = [
   { id: 1, group_name: "fruit", tag_name: "blackberry" }
-];
-
-const mockWines = [
-  { id: 101, name: "Dark Horse Cabernet", winery: "Dark Horse", image_url: "" }
 ];
 
 describe('Add Note Modal', () => {
@@ -41,7 +39,7 @@ describe('Add Note Modal', () => {
             if (url.includes("/api/wines")) {
                 return Promise.resolve({
                     ok: true,
-                    json: async () => mockWines,
+                    json: async () => mockWineSearchResults,
                 });
             }
 
@@ -50,7 +48,7 @@ describe('Add Note Modal', () => {
                     ok: true,
                     json: async () => ({
                         id: 1,
-                        wine_id: 101,
+                        wine_id: mockWineSearchResult.id,
                     }),
                 });
             }
@@ -117,7 +115,7 @@ describe('Add Note Modal', () => {
         const body = JSON.parse(submitCall[1].body);
 
         expect(body).toMatchObject({
-            wine_id: 101,
+            wine_id: mockWineSearchResult.id,
             price: "20",
             comment: "Bright and fresh.",
             score: 5,
@@ -186,4 +184,34 @@ describe('Add Note Modal', () => {
 
         expect(aiCall).toBeDefined();
     })
+
+    test("updates slider values", async () => {
+        global.fetch = vi.fn((url) => {
+            if (url.includes("/api/tasteTags")) {
+            return Promise.resolve({
+                ok: true,
+                json: async () => [],
+            });
+            }
+
+            return Promise.reject(new Error(`Unhandled fetch: ${url}`));
+        });
+
+        render(<AddNoteModal onClose={vi.fn()} />);
+
+        const aciditySlider = screen.getByRole("slider", {
+            name: /acidity/i,
+        });
+        
+        const sweetnessSlider = screen.getByRole("slider", {
+            name: /sweetness/i,
+        });
+
+        fireEvent.change(aciditySlider, {
+            target: { value: "8" },
+        });
+
+        expect(aciditySlider).toHaveValue("8");
+        expect(sweetnessSlider).toHaveValue("5");
+    });
 })

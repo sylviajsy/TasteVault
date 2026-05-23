@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { toast } from 'react-toastify';
 import { WineCard } from '../components/WineCard';
 import { WineDetailModal } from '../components/WineDetailModal';
@@ -10,39 +10,99 @@ export const DiscoveryPage = () => {
     const [wines, setWines] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedWine, setSelectedWine] = useState(null);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);  
     const [query, setQuery] = useState("");
+    // Create a ref to anchor the loaderRef element at the bottom of the list
+    const loaderRef = useRef(null);
+    const limit = 24;
 
-    const loadWines = async (searchTerm = "") => {
-        // Search input cleanup
-        const search = searchTerm.replace(/\s+/g, " ").trim();
+    const loadWines = useCallback(
+        async (searchTerm = "", pageNumber = 0, replace = false) => {
+            // Search input cleanup
+            const search = searchTerm.replace(/\s+/g, " ").trim();
 
-        try {
-            setLoading(true);
+            if (stateRef.current.loading) return;
 
-            const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(search)}`);
-            const data = await res.json();
+            try {
+                setLoading(true);
 
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to fetch wines');
+                const offset = pageNumber * limit;
+
+                const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(search)}&limit=${limit}&offset=${offset}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to fetch wines');
+                }
+
+                setWines((prev) => (replace ? data : [...prev, ...data]));
+                setHasMore(data.length === limit);
+                console.log('Wines', data);
+            } catch (error) {
+                console.error(error);
+                toast.error(error.message);
+            }  finally {
+                setLoading(false);
             }
+    }, [API_URL])
 
-            setWines(data);
-            console.log('Wines', data);
-        } catch (error) {
-            console.error(error);
-            toast.error(error.message);
-        }  finally {
-            setLoading(false);
-        }
-    }
-
+    // To next page
     useEffect(() => {
-        loadWines();
-    },[])
+        const isReplace = page === 0;
+        loadWines(query, page, isReplace);
+    },[page, query, loadWines])
+
+    // New search query, page = 0
+    useEffect(() => {
+        setPage(0);
+        setHasMore(true);
+    }, [query]);
+
+    const stateRef = useRef({ page, query, hasMore, loading });
+    useEffect(() => {
+        stateRef.current = { page, query, hasMore, loading };
+    }, [page, query, hasMore, loading]);
+
+    // Infinite scroll observer
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            // entries[0] represents the loaderRef element we are tracking
+            const firstEntry = entries[0];
+            const { hasMore: currentHasMore, loading: currentLoading, page: currentGlobalPage } = stateRef.current;
+
+            if (firstEntry.isIntersecting && currentHasMore && !currentLoading) {
+                // Increment page to trigger the fetch useEffect
+                setPage(currentGlobalPage + 1);
+            }
+        }, {
+            threshold: 0.1, // Trigger the callback when 10% of the sentinel is visible
+        })
+
+        const currentLoader = loaderRef.current;
+
+        // Start observing the loaderRef element at the bottom
+        if (currentLoader) {
+            observer.observe(currentLoader);
+        }
+
+        // Cleanup: disconnect the observer on unmount to prevent memory leaks
+        return () => {
+            if (currentLoader) {
+                observer.unobserve(currentLoader);
+            }
+        }
+    }, [])
 
     const handleSelectedWine = (wine) => {
         setSelectedWine(wine);
     }
+
+    const handleSearch = (value) => {
+        setPage(0);
+        setHasMore(true);
+        loadWines(value, 0, true);
+    };
 
     const handleCloseModal = () => {
         setSelectedWine(null);
@@ -52,11 +112,11 @@ export const DiscoveryPage = () => {
     <div className="px-4 pb-10 md:px-6">
         <h1>Discovery Page</h1>
         {loading && (
-          <p className="mb-4 text-wine-burgundy">
+          <p className="mb-4 text-brand">
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadWines}/>
+        <GlobalSearchBar value={query} onChange={setQuery} onSearch={handleSearch}/>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 
@@ -74,6 +134,21 @@ export const DiscoveryPage = () => {
                 />
             )}
         </div>
+
+        {/* IntersectionObserver */}
+        <div ref={loaderRef} className="h-10" />
+
+        {loading && (
+            <p className="mt-4 text-center text-brand">
+                Loading more wines...
+            </p>
+        )}
+
+        {!hasMore && (
+            <p className="mt-4 text-center text-text-soft">
+                No more wines.
+            </p>
+        )}
     </div>
   )
 }

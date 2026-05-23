@@ -2,31 +2,13 @@ import request from "supertest";
 import { test, expect, describe, vi, afterEach } from 'vitest';
 import app from "../src/index.js";
 import pool from "../db/connection.js";
+import { mockJournalInput } from "../../test-data/journal.js";
 
 vi.mock("../db/connection.js", () => ({
   default: {
     query: vi.fn(),
   },
 }));
-
-const mockNote = {
-            wine_id: 123,
-            price: 19.99,
-            comment: "Bright acidity and smooth finish.",
-            user_acidity: 7,
-            user_fizziness: 0,
-            user_intensity: 8,
-            user_sweetness: 3,
-            user_tannin: 5,
-            score: 9,
-            user_flavor: [
-                {
-                group: "black_fruit",
-                notes: ["blackberry", "blueberry"],
-                },
-            ],
-        }
-
 
 describe('Journal Routes', () => {
     afterEach(() => {
@@ -37,7 +19,7 @@ describe('Journal Routes', () => {
         const mockResponse = { 
             id: 1, 
             user_id: "test-user-id", 
-            ...mockNote, 
+            ...mockJournalInput, 
             created_at: "2026-05-11T00:00:00.000Z"
         };
 
@@ -47,7 +29,7 @@ describe('Journal Routes', () => {
 
         const res = await request(app)
         .post("/api/journal")
-        .send(mockNote);
+        .send(mockJournalInput);
 
         expect(res.statusCode).toBe(201);
         expect(res.body).toEqual(mockResponse); 
@@ -58,7 +40,7 @@ describe('Journal Routes', () => {
         const mockResponse = { 
             id: 1, 
             user_id: "test-user-id", 
-            ...mockNote, 
+            ...mockJournalInput, 
             created_at: "2026-05-11T00:00:00.000Z"
         };
 
@@ -70,5 +52,16 @@ describe('Journal Routes', () => {
 
         expect(res.statusCode).toBe(200);
         expect(pool.query).toHaveBeenCalledTimes(1);
+    })
+
+    test('GET /api/journal returns no result returned when empty', async () => {
+        pool.query.mockResolvedValueOnce({
+            rows: [],
+        });
+
+        const res = await request(app).get("/api/journal");
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body).toEqual({ error: "No journal found!" });
     })
 })
