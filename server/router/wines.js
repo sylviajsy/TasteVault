@@ -2,6 +2,7 @@ import express from 'express';
 import pool from '../db/connection.js';
 import { fixUrl } from "../helpers/url.js";
 import redisClient from "../db/redis.js";
+import crypto from "crypto";
 
 const router = express.Router();
 
