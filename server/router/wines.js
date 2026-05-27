@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
     let winesDTO;
 
     // Try Redis first
-    if (redisClient) {
+    if (!search && redisClient) {
       const cached = await redisClient.get(cacheKey);
 
       if (cached) {
@@ -87,7 +87,7 @@ router.get('/', async (req, res) => {
       winesDTO = result.rows.map(mapToWineDTO);
 
       // Save DB result to Redis
-      if (redisClient) {
+      if (!search && redisClient) {
         await redisClient.setEx(
           cacheKey,
           60 * 10,
@@ -97,18 +97,19 @@ router.get('/', async (req, res) => {
     }
 
     // Generate ETag from final response data
-    const etag = `"${crypto
-      .createHash("md5")
-      .update(JSON.stringify(winesDTO))
-      .digest("hex")}"`;
+    if (!search) {
+      const etag = `"${crypto
+        .createHash("md5")
+        .update(JSON.stringify(winesDTO))
+        .digest("hex")}"`;
 
-    // If browser cache matches, return 304
-    if (req.headers["if-none-match"] === etag) {
-      return res.status(304).end();
+      // If browser cache matches, return 304
+      if (req.headers["if-none-match"] === etag) {
+        return res.status(304).end();
+      }
+
+      res.setHeader("ETag", etag);
     }
-
-    res.setHeader("ETag", etag);
-
     return res.status(200).json(winesDTO);
   } catch (error) {
     console.error("GET /api/wines failed:", error);
