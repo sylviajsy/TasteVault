@@ -39,56 +39,77 @@ router.get('/', async (req, res) => {
 
     // Create a unique Redis cache key, prevents different searches/pages from overwriting each other
     const cacheKey = `wines:search:${search}:limit:${limit}:offset:${offset}`;
-    const cached = await redisClient.get(cacheKey);
 
-    // Try to get cached wine results from Redis first
-    if (cached) {
-      return res.status(200).json(JSON.parse(cached));
+    let winesDTO;
+
+    // Try Redis first
+    if (redisClient) {
+      const cached = await redisClient.get(cacheKey);
+
+      if (cached) {
+        winesDTO = JSON.parse(cached);
+      }
     }
 
-    const values = [];
-    let whereClause = "";
+    // If Redis missed, query DB
+    if (!winesDTO) {
+      const values = [];
+      let whereClause = "";
 
-    if (search) {
-      values.push(`%${search}%`);
+      if (search) {
+        values.push(`%${search}%`);
 
-      whereClause = `
-        WHERE name ILIKE $1
-           OR winery ILIKE $1
-           OR region_display ILIKE $1
-      `;
+        whereClause = `
+          WHERE name ILIKE $1
+             OR winery ILIKE $1
+             OR region_display ILIKE $1
+        `;
+      }
+
+      values.push(limit, offset);
+
+      // Add Paginition
+      const limitParam = values.length - 1;
+      const offsetParam = values.length;
+
+      const result = await pool.query(
+        `
+          SELECT *
+          FROM wines
+          ${whereClause}
+          ORDER BY name
+          LIMIT $${limitParam}
+          OFFSET $${offsetParam}
+        `,
+        values
+      );
+
+      winesDTO = result.rows.map(mapToWineDTO);
+
+      // Save DB result to Redis
+      if (redisClient) {
+        await redisClient.setEx(
+          cacheKey,
+          60 * 10,
+          JSON.stringify(winesDTO)
+        );
+      }
     }
 
-     // Add pagination parameters
-    values.push(limit, offset);
+    // Generate ETag from final response data
+    const etag = `"${crypto
+      .createHash("md5")
+      .update(JSON.stringify(winesDTO))
+      .digest("hex")}"`;
 
-    const limitParam = values.length - 1;
-    const offsetParam = values.length;
+    // If browser cache matches, return 304
+    if (req.headers["if-none-match"] === etag) {
+      return res.status(304).end();
+    }
 
-    const result = await pool.query(
-      `
-        SELECT *
-        FROM wines
-        ${whereClause}
-        ORDER BY name
-        LIMIT $${limitParam}
-        OFFSET $${offsetParam}
-      `,
-      values
-    );
+    res.setHeader("ETag", etag);
 
-    const winesDTO = result.rows.map(mapToWineDTO);
-    
-    // Save mapped results into Redis cache
-    // setEx = set with expiration time
-    // Cache expires after 10 minutes
-    await redisClient.setEx(
-      cacheKey,
-      60 * 10,
-      JSON.stringify(winesDTO)
-    );
-
-    res.status(200).json(winesDTO);
+    return res.status(200).json(winesDTO);
   } catch (error) {
     console.error("GET /api/wines failed:", error);
     res.status(500).json({ error: 'Failed to fetch wines' });
