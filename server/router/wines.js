@@ -34,8 +34,12 @@ const mapToWineDTO = (wine) => {
 router.get('/', async (req, res) => {
   try {
     const search = req.query.search?.trim() || "";
-    const limit = Number(req.query.limit) || 24;
-    const offset = Number(req.query.offset) || 0;
+    const limit = Number(req.query.limit);
+    const offset = Number(req.query.offset);
+
+    if (isNaN(limit) || limit <= 0) limit = 24;
+    if (isNaN(offset) || offset <= 0) offset = 0;
+    if (limit > 100) limit = 100;
 
     // Create a unique Redis cache key, prevents different searches/pages from overwriting each other
     const cacheKey = `wines:search:${search}:limit:${limit}:offset:${offset}`;
