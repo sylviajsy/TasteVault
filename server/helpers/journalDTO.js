@@ -8,7 +8,7 @@ export const mapJournalInputDTO = (body, userId) => {
         score: body.score,
         price: body.price,
         acidity: body.user_acidity ?? 5,
-        fizziness: body.user_fizziness ?? 5,
+        fizziness: body.user_fizziness ?? 0,
         intensity: body.user_intensity ?? 5,
         sweetness: body.user_sweetness ?? 5,
         tannin: body.user_tannin ?? 5,
@@ -22,7 +22,7 @@ export const mapJournalOutputDTO = (row) => {
   return {
     noteId: row.id,
     date: row.created_at 
-            ? new Date(row.created_at).toLocaleDateString('en-US', {timeZone: "UTC"}) 
+            ? new Date(row.created_at).toLocaleDateString('en-US') 
             : 'Unknown Date',
     wine: {
       id: row.wine_id,

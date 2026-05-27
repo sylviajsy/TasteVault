@@ -16,8 +16,8 @@ export const WineCard = ({ wine, onSelect }) => {
     };
 
   return (
-    <article onClick={handleClick} className="overflow-hidden rounded-3xl border border-wine-border bg-wine-cream text-left shadow-wine-card transition hover:-translate-y-1 hover:shadow-wine-card-hover">
-      <div className="flex h-80 items-center justify-center bg-gradient-to-br from-wine-blush to-wine-rose p-6">
+    <article onClick={handleClick} className="ui-card overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-card-hover">
+      <div className="flex h-80 items-center justify-center bg-gradient-to-br from-tint to-accent p-6">
         {wine.image_url ? (
           <img
             src={wine.image_url}
@@ -25,7 +25,7 @@ export const WineCard = ({ wine, onSelect }) => {
             className="max-h-60 object-contain"
           />
         ) : (
-          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-wine-label">
+          <span className="text-sm font-semibold uppercase tracking-[0.2em] text-label">
             Taste Vault
           </span>
         )}
@@ -33,22 +33,22 @@ export const WineCard = ({ wine, onSelect }) => {
 
       <div className="space-y-4 p-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-wine-label">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-label">
             {safeRegion}
           </p>
-          <h3 className="mt-2 text-xl font-semibold text-wine-text">
+          <h3 className="mt-2 text-xl font-semibold text-text">
             {safeName}
           </h3>
-          <p className="mt-1 text-sm text-wine-text-soft">
+          <p className="mt-1 text-sm text-text-soft">
             {safeWinery}
             {safeYear}
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-sm text-wine-muted">
-          <div className="rounded-2xl bg-wine-panel px-3 py-2">
-            <p className="text-xs uppercase tracking-[0.16em] text-wine-label">Price</p>
-            <p className="mt-1 font-semibold text-wine-text">
+        <div className="grid grid-cols-2 gap-3 text-sm text-muted">
+          <div className="ui-panel">
+            <p className="text-xs uppercase tracking-[0.16em] text-label">Price</p>
+            <p className="mt-1 font-semibold text-text">
               {safePrice}
             </p>
           </div>
@@ -58,7 +58,7 @@ export const WineCard = ({ wine, onSelect }) => {
           {grapes.slice(0, 3).map((grape) => (
             <span
               key={grape}
-              className="rounded-full border border-wine-border bg-wine-chip px-3 py-1 text-xs font-medium text-wine-burgundy"
+              className="ui-chip text-brand"
             >
               {grape}
             </span>
