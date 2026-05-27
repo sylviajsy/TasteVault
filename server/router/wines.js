@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../db/connection.js';
+import crypto from "crypto";
 import { fixUrl } from "../helpers/url.js";
 
 const router = express.Router();
@@ -65,6 +66,27 @@ router.get('/', async (req, res) => {
     );
 
     const winesDTO = result.rows.map(mapToWineDTO);
+
+    // Generate etag for whole wine dataset
+    if (!search){
+      // Generate a hash based on response content
+      const etag = crypto
+        .createHash("md5")
+        .update(JSON.stringify(winesDTO))
+        .digest("hex");
+
+      // Read browser's previous ETag
+      const clientETag = req.headers["if-none-match"];
+
+      // If browser cache is still valid,
+      // return 304 without sending response body again
+      if (clientETag === etag) {
+        return res.status(304).end();
+      }
+
+      // Attach ETag header to response
+      res.setHeader("ETag", etag);
+    }
 
     res.status(200).json(winesDTO);
   } catch (error) {
