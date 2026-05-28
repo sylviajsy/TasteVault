@@ -1,13 +1,25 @@
 import { createClient } from "redis";
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL,
-});
+let redisClient = null;
 
-redisClient.on("error", (err) => {
-  console.error("Redis error:", err);
-});
+if (process.env.REDIS_URL) {
+  redisClient = createClient({
+    url: process.env.REDIS_URL,
+  });
 
-await redisClient.connect();
+  redisClient.on("error", (err) => {
+    console.error("Redis error:", err.message);
+  });
+
+  try {
+    await redisClient.connect();
+    console.log("Redis connected");
+  } catch (error) {
+    console.error("Redis unavailable, running without cache");
+    redisClient = null;
+  }
+} else {
+  console.log("REDIS_URL not provided, running without cache");
+}
 
 export default redisClient;
