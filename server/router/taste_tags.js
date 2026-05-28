@@ -44,7 +44,7 @@ router.get("/", async (req, res) => {
       .update(JSON.stringify(tags))
       .digest("hex")}"`;
 
-    if (req.headers["if-none-match"] === etag) {
+    if (req.get["if-none-match"] === etag) {
       return res.status(304).end();
     }
 
