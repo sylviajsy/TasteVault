@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { GlobalSearchBar } from "./GlobalSearchBar";
 
@@ -25,6 +25,8 @@ export const AddNoteModal = ({ onClose }) => {
     const [selectedGroups, setSelectedGroups] = useState([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedText, setGeneratedText] = useState("");
+    const closeButtonRef = useRef(null);
+    const titleId = "add-note-modal-title";
 
     const sliderFields = [
         {name: "score", label: "Score"},
@@ -95,6 +97,19 @@ export const AddNoteModal = ({ onClose }) => {
     useEffect(() => {
         loadTasteTags();
     }, []);
+
+    useEffect(() => {
+        closeButtonRef.current?.focus();
+
+        const handleEscape = (event) => {
+            if (event.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEscape);
+        return () => window.removeEventListener("keydown", handleEscape);
+    }, [onClose]);
 
     const handleWineSearch = async (searchTerm) => {
         try {
@@ -285,17 +300,22 @@ export const AddNoteModal = ({ onClose }) => {
         <form
             onSubmit={handleSubmit}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
             className="relative max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] border border-[#dcc4ba] bg-[#fff8ef] p-6 text-left shadow-[0_30px_80px_rgba(61,11,26,0.28)] md:p-8"
         >
             <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#ead7ce] pb-4">
                 <div>
-                    <h2 className="text-3xl font-semibold text-[#5b1228]">Add Tasting Note</h2>
+                    <h2 id={titleId} className="text-3xl font-semibold text-[#5b1228]">Add Tasting Note</h2>
                     <p className="mt-2 text-sm text-[#7a4c43]">
                         Save your tasting notes, mood, and flavor impressions.
                     </p>
                 </div>
                 <button
+                    ref={closeButtonRef}
                     type="button"
+                    aria-label="Close modal"
                     onClick={onClose}
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#6f102e] text-lg font-semibold text-[#fff9f2] transition hover:bg-[#581024]"
                 >
@@ -311,7 +331,9 @@ export const AddNoteModal = ({ onClose }) => {
                 <GlobalSearchBar 
                     value={searchInput}
                     onChange={handleWineSearchChange}
-                    onSearch={handleWineSearch} 
+                    onSearch={handleWineSearch}
+                    id="wine-search"
+                    label="Search for a wine"
                 />
                     {loading && (
                         <p className="mt-3 text-sm text-[#7a4c43]">Searching wines...</p>
@@ -418,6 +440,7 @@ export const AddNoteModal = ({ onClose }) => {
                         <button
                             key={groupName}
                             type="button"
+                            aria-pressed={isSelected}
                             onClick={() => toggleGroup(groupName)}
                             className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
                                 isSelected
@@ -447,6 +470,7 @@ export const AddNoteModal = ({ onClose }) => {
                                 <button
                                     key={tag.id}
                                     type="button"
+                                    aria-pressed={isSelected}
                                     onClick={() => toggleFlavorTag(tag.tag_name, groupName)}
                                     className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
                                         isSelected

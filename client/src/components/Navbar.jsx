@@ -6,6 +6,13 @@ import { selectDisplayName } from "../store/userSlice";
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const displayName = useSelector(selectDisplayName);
+  const menuId = "explore-menu";
+
+  const handleButtonKeyDown = (event) => {
+    if (event.key === "Escape") {
+      setIsOpen(false);
+    }
+  };
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-border-soft bg-surface-soft/95 shadow-shell backdrop-blur">
@@ -20,15 +27,24 @@ function Navbar() {
               type="button"
               className="ui-button-primary"
               onClick={() => setIsOpen((open) => !open)}
+              onKeyDown={handleButtonKeyDown}
+              aria-expanded={isOpen}
+              aria-haspopup="menu"
+              aria-controls={menuId}
             >
               Explore
             </button>
 
             {isOpen && (
               <div className="absolute left-0 top-full z-50 pt-2">
-                <div className="w-44 rounded-2xl border border-border bg-surface p-2 text-left shadow-popover">
+                <div
+                  id={menuId}
+                  role="menu"
+                  className="w-44 rounded-2xl border border-border bg-surface p-2 text-left shadow-popover"
+                >
                   <Link
                     to="/"
+                    role="menuitem"
                     className="block rounded-xl px-4 py-3 text-sm font-medium text-text transition hover:bg-surface-deep"
                     onClick={() => setIsOpen(false)}
                   >
@@ -36,6 +52,7 @@ function Navbar() {
                   </Link>
                   <Link
                     to="/journal"
+                    role="menuitem"
                     className="block rounded-xl px-4 py-3 text-sm font-medium text-text transition hover:bg-surface-deep"
                     onClick={() => setIsOpen(false)}
                   >

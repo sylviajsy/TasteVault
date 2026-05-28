@@ -1,6 +1,12 @@
 import { useEffect } from "react";
 
-export const GlobalSearchBar = ({ value, onChange, onSearch }) => {
+export const GlobalSearchBar = ({
+    value,
+    onChange,
+    onSearch,
+    id = "global-search",
+    label = "Search",
+}) => {
     useEffect(() => {
         const cleanedValue = value.replace(/\s+/g, " ").trim();
 
@@ -13,7 +19,11 @@ export const GlobalSearchBar = ({ value, onChange, onSearch }) => {
 
   return (
     <div className="mx-auto mb-8 w-full max-w-3xl bg-transparent p-1">
+        <label htmlFor={id} className="sr-only">
+            {label}
+        </label>
         <input
+            id={id}
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}

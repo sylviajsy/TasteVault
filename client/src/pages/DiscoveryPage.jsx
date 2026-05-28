@@ -116,7 +116,13 @@ export const DiscoveryPage = () => {
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={handleSearch}/>
+        <GlobalSearchBar
+          id="discovery-search"
+          label="Search wines"
+          value={query}
+          onChange={setQuery}
+          onSearch={handleSearch}
+        />
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 

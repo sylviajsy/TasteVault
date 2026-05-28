@@ -15,8 +15,22 @@ export const WineCard = ({ wine, onSelect }) => {
         console.log("wine selected",wine);
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            handleClick();
+        }
+    };
+
   return (
-    <article onClick={handleClick} className="ui-card overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-card-hover">
+    <article
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${safeName}`}
+      className="ui-card overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-card-hover focus:outline-none focus:ring-4 focus:ring-brand-soft/20"
+    >
       <div className="flex h-80 items-center justify-center bg-gradient-to-br from-tint to-accent p-6">
         {wine.image_url ? (
           <img

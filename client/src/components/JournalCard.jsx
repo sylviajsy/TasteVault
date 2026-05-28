@@ -8,8 +8,23 @@ export const JournalCard = ({ note, onSelect }) => {
         console.log("journal selected",note);
     };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <article onClick={handleClick} data-testid="journal-card" className="grid gap-5 rounded-[2rem] bg-transparent p-2 text-left md:grid-cols-[140px_1fr]">
+    <article
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View tasting note for ${note.wine?.name || "wine"}`}
+      data-testid="journal-card"
+      className="grid gap-5 rounded-[2rem] bg-transparent p-2 text-left md:grid-cols-[140px_1fr] focus:outline-none focus:ring-4 focus:ring-brand-soft/20"
+    >
       <div className="px-4 py-5 text-center">
         <p className="mt-2 text-lg font-semibold text-brand">
           {note.date}

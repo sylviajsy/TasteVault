@@ -64,7 +64,13 @@ export const JournalPage = () => {
           <p className="text-text-soft">No tasting notes yet. Add your first tasting note!</p>
         )}
 
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadNote}/>
+        <GlobalSearchBar
+          id="journal-search"
+          label="Search tasting notes"
+          value={query}
+          onChange={setQuery}
+          onSearch={loadNote}
+        />
 
         <div className="space-y-6">
           {journal.map((note) => (
