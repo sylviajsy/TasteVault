@@ -2,7 +2,6 @@ import express from 'express';
 import pool from '../db/connection.js';
 import { fixUrl } from "../helpers/url.js";
 import redisClient from "../db/redis.js";
-import crypto from "crypto";
 
 const router = express.Router();
 
@@ -34,11 +33,11 @@ const mapToWineDTO = (wine) => {
 router.get('/', async (req, res) => {
   try {
     const search = req.query.search?.trim() || "";
-    const limit = Number(req.query.limit);
-    const offset = Number(req.query.offset);
+    let limit = Number(req.query.limit);
+    let offset = Number(req.query.offset);
 
     if (isNaN(limit) || limit <= 0) limit = 24;
-    if (isNaN(offset) || offset <= 0) offset = 0;
+    if (isNaN(offset) || offset < 0) offset = 0;
     if (limit > 100) limit = 100;
 
     // Create a unique Redis cache key, prevents different searches/pages from overwriting each other
@@ -48,10 +47,13 @@ router.get('/', async (req, res) => {
 
     // Try Redis first
     if (!search && redisClient) {
-      const cached = await redisClient.get(cacheKey);
-
-      if (cached) {
-        winesDTO = JSON.parse(cached);
+      try {
+        const cached = await redisClient.get(cacheKey);
+        if (cached) {
+          winesDTO = JSON.parse(cached);
+        }
+      } catch (redisErr) {
+        console.error("Redis read error:", redisErr);
       }
     }
 
@@ -70,12 +72,13 @@ router.get('/', async (req, res) => {
         `;
       }
 
-      values.push(limit, offset);
+      values.push(limit);
+      const limitParam = values.length;
 
-      // Add Paginition
-      const limitParam = values.length - 1;
+      values.push(offset);
       const offsetParam = values.length;
 
+      // Add Paginition
       const result = await pool.query(
         `
           SELECT *
@@ -91,29 +94,19 @@ router.get('/', async (req, res) => {
       winesDTO = result.rows.map(mapToWineDTO);
 
       // Save DB result to Redis
-      if (!search && redisClient) {
-        await redisClient.setEx(
-          cacheKey,
-          60 * 10,
-          JSON.stringify(winesDTO)
-        );
+      if (!search && redisClient && winesDTO.length > 0) {
+        try {
+          await redisClient.setEx(
+            cacheKey,
+            60 * 10,
+            JSON.stringify(winesDTO)
+          );
+        } catch (redisErr) {
+          console.error("Redis write error:", redisErr);
+        }
       }
     }
 
-    // Generate ETag from final response data
-    if (!search) {
-      const etag = `"${crypto
-        .createHash("md5")
-        .update(JSON.stringify(winesDTO))
-        .digest("hex")}"`;
-
-      // If browser cache matches, return 304
-      if (req.headers["if-none-match"] === etag) {
-        return res.status(304).end();
-      }
-
-      res.setHeader("ETag", etag);
-    }
     return res.status(200).json(winesDTO);
   } catch (error) {
     console.error("GET /api/wines failed:", error);
