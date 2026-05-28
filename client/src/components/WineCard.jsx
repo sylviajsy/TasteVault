@@ -29,9 +29,9 @@ export const WineCard = ({ wine, onSelect }) => {
       role="button"
       tabIndex={0}
       aria-label={`View details for ${safeName}`}
-      className="ui-card overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-card-hover focus:outline-none focus:ring-4 focus:ring-brand-soft/20"
+      className="ui-card overflow-hidden rounded-[1.5rem] text-left transition hover:-translate-y-1 hover:shadow-card-hover focus:outline-none focus:ring-4 focus:ring-brand-soft/20 sm:rounded-3xl"
     >
-      <div className="flex h-80 items-center justify-center bg-gradient-to-br from-tint to-accent p-6">
+      <div className="flex h-72 items-center justify-center bg-gradient-to-br from-tint to-accent p-4 sm:h-80 sm:p-6">
         {wine.image_url ? (
           <img
             src={wine.image_url}
@@ -45,7 +45,7 @@ export const WineCard = ({ wine, onSelect }) => {
         )}
       </div>
 
-      <div className="space-y-4 p-5">
+      <div className="space-y-4 p-4 sm:p-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-label">
             {safeRegion}
