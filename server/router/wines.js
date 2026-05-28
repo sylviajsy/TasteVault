@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
     if (limit > 100) limit = 100;
 
     // Create a unique Redis cache key, prevents different searches/pages from overwriting each other
-    const cacheKey = `wines:search:${search}:limit:${limit}:offset:${offset}`;
+    const cacheKey = `wines:limit:${limit}:offset:${offset}`;
 
     let winesDTO;
 
