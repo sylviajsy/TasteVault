@@ -55,7 +55,7 @@ export const JournalPage = () => {
   }
 
   return (
-    <div className="px-4 pb-10 md:px-6">
+    <div className="px-3 pb-24 sm:px-4 sm:pb-10 md:px-6">
         <h1>JournalPage</h1>
 
         {loading && <p className="text-brand">Loading journal...</p>}
@@ -64,7 +64,13 @@ export const JournalPage = () => {
           <p className="text-text-soft">No tasting notes yet. Add your first tasting note!</p>
         )}
 
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadNote}/>
+        <GlobalSearchBar
+          id="journal-search"
+          label="Search tasting notes"
+          value={query}
+          onChange={setQuery}
+          onSearch={loadNote}
+        />
 
         <div className="space-y-6">
           {journal.map((note) => (

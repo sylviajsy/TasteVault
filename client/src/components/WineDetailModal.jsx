@@ -1,4 +1,5 @@
 import { TasteRadarChart } from "./TasteRadarChart";
+import { useEffect, useRef } from "react";
 
 export const WineDetailModal = ({ wine, onClose }) => {
   if (!wine) {
@@ -17,6 +18,19 @@ export const WineDetailModal = ({ wine, onClose }) => {
   const safeWinery = textOr(wine.winery, "Unknown Winery");
   const safeRegion = textOr(wine.region, "Region unavailable");
   const safePrice = textOr(wine.price);
+  const closeButtonRef = useRef(null);
+  const titleId = "wine-detail-title";
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [onClose]);
 
   return (
     <div
@@ -26,9 +40,14 @@ export const WineDetailModal = ({ wine, onClose }) => {
       <div
         className="ui-modal-shell max-w-4xl"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
       >
         <button
+          ref={closeButtonRef}
           type="button"
+          aria-label="Close modal"
           className="ui-close-button"
           onClick={onClose}
         >
@@ -55,7 +74,7 @@ export const WineDetailModal = ({ wine, onClose }) => {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-label">
                 {safeRegion}
               </p>
-              <h2 className="text-3xl font-semibold text-text">
+              <h2 id={titleId} className="text-3xl font-semibold text-text">
                 {safeName}
               </h2>
               <p className="text-base text-text-soft">
