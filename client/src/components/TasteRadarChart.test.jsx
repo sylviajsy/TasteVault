@@ -31,4 +31,29 @@ describe("TasteRadarChart", () => {
     expect(screen.getByTestId("radius-axis")).toHaveTextContent("0,2,4,6,8,10");
     expect(screen.getByTestId("radar")).toHaveTextContent("value");
   });
+
+  test("normalizes missing or invalid values to zero", () => {
+    const incompleteWine = {
+      ...mockWine,
+      acidity: undefined,
+      fizziness: "bad-value",
+      tannin: null,
+      sweetness: "",
+      intensity: 8,
+    };
+
+    render(<TasteRadarChart wine={incompleteWine} />);
+
+    const chartData = JSON.parse(
+      screen.getByTestId("radar-chart").getAttribute("data-chart")
+    );
+
+    expect(chartData).toEqual([
+      { metric: "Acidity", value: 0 },
+      { metric: "Fizziness", value: 0 },
+      { metric: "Tannin", value: 0 },
+      { metric: "Sweetness", value: 0 },
+      { metric: "Intensity", value: 8 },
+    ]);
+  });
 });
