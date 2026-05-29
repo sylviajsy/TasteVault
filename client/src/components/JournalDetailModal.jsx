@@ -1,3 +1,5 @@
+import { TasteRadarChart } from "./TasteRadarChart";
+
 export const JournalDetailModal = ({ journal, onClose }) => {
   if (!journal) {
     return null;
@@ -107,6 +109,8 @@ export const JournalDetailModal = ({ journal, onClose }) => {
                 <p className="mt-1 font-semibold text-text">{scaleOr(userStats.tannin)}</p>
               </div>
             </div>
+
+            
 
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-label">
