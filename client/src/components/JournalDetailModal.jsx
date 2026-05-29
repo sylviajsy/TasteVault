@@ -23,8 +23,6 @@ export const JournalDetailModal = ({ journal, onClose }) => {
   const titleId = "journal-detail-title";
 
   useEffect(() => {
-    closeButtonRef.current?.focus();
-
     const handleEscape = (event) => {
       if (event.key === "Escape") {
         onClose();

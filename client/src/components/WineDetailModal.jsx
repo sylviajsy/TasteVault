@@ -21,8 +21,6 @@ export const WineDetailModal = ({ wine, onClose }) => {
   const titleId = "wine-detail-title";
 
   useEffect(() => {
-    closeButtonRef.current?.focus();
-
     const handleEscape = (event) => {
       if (event.key === "Escape") {
         onClose();

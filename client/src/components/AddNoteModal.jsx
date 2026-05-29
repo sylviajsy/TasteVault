@@ -99,8 +99,6 @@ export const AddNoteModal = ({ onClose }) => {
     }, []);
 
     useEffect(() => {
-        closeButtonRef.current?.focus();
-
         const handleEscape = (event) => {
             if (event.key === "Escape") {
                 onClose();
