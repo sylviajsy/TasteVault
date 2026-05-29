@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 
 export const GlobalSearchBar = ({
+    value = "",
     onSearch,
     id = "global-search",
     label = "Search",
 }) => {
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = useState(value);
+
+    useEffect(() => {
+        setQuery(value);
+    }, [value]);
 
     useEffect(() => {
         const cleanedValue = query.replace(/\s+/g, " ").trim();

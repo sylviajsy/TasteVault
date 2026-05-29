@@ -110,6 +110,12 @@ export const AddNoteModal = ({ onClose }) => {
     }, [onClose]);
 
     const handleWineSearch = async (searchTerm) => {
+        const cleaned = searchTerm.trim();
+        if (!cleaned || (selectedWine && cleaned === selectedWine.name)) {
+            setWinesResults([]);
+            return;
+        }
+
         try {
             setLoading(true);
 
@@ -156,20 +162,6 @@ export const AddNoteModal = ({ onClose }) => {
             ...prev,
             [name]: value,
         }));
-    };
-
-    const handleWineSearchChange = (value) => {
-        setSearchInput(value);
-
-        console.log("Selecting wine with ID:", value.id);
-        if (selectedWine && value !== selectedWine.name) {
-            setSelectedWine(null);
-
-            setFormData((prev) => ({
-                ...prev,
-                wine_id: null,
-            }));
-        }
     };
 
     const handleSliderChange = (e) => {
@@ -328,7 +320,6 @@ export const AddNoteModal = ({ onClose }) => {
 
                 <GlobalSearchBar 
                     value={searchInput}
-                    onChange={handleWineSearchChange}
                     onSearch={handleWineSearch}
                     id="wine-search"
                     label="Search for a wine"
