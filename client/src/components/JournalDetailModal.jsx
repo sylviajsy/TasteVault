@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 export const JournalDetailModal = ({ journal, onClose }) => {
   if (!journal) {
     return null;
@@ -17,6 +19,19 @@ export const JournalDetailModal = ({ journal, onClose }) => {
   const safeRegion = textOr(wine.region, "Region unavailable");
   const safeDate = textOr(journal.date, "Unknown Date");
   const safeComment = textOr(userStats.comment, "No tasting note yet.");
+  const closeButtonRef = useRef(null);
+  const titleId = "journal-detail-title";
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [onClose]);
 
   return (
     <div
@@ -26,8 +41,12 @@ export const JournalDetailModal = ({ journal, onClose }) => {
       <div
         className="ui-modal-shell max-w-4xl"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
       >
         <button
+          ref={closeButtonRef}
           type="button"
           aria-label="Close modal"
           className="ui-close-button"
@@ -66,7 +85,7 @@ export const JournalDetailModal = ({ journal, onClose }) => {
                   </p>
                 </div>
               </div>
-              <h2 className="text-3xl font-semibold text-text">
+              <h2 id={titleId} className="text-3xl font-semibold text-text">
                 {safeName}
               </h2>
               <p className="text-base text-text-soft">

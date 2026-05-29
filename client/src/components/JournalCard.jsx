@@ -8,15 +8,30 @@ export const JournalCard = ({ note, onSelect }) => {
         console.log("journal selected",note);
     };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <article onClick={handleClick} data-testid="journal-card" className="grid gap-5 rounded-[2rem] bg-transparent p-2 text-left md:grid-cols-[140px_1fr]">
-      <div className="px-4 py-5 text-center">
+    <article
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label={`View tasting note for ${note.wine?.name || "wine"}`}
+      data-testid="journal-card"
+      className="grid gap-3 rounded-[2rem] bg-transparent p-1 text-left sm:gap-5 sm:p-2 md:grid-cols-[140px_1fr] focus:outline-none focus:ring-4 focus:ring-brand-soft/20"
+    >
+      <div className="px-2 py-2 text-center sm:px-4 sm:py-5">
         <p className="mt-2 text-lg font-semibold text-brand">
           {note.date}
         </p>
       </div>
 
-      <div className="ui-card flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+      <div className="ui-card flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
         {note.wine?.imageUrl && (
           <img
             src={note.wine.imageUrl}
