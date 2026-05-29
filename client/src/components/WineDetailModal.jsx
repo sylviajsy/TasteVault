@@ -97,6 +97,8 @@ export const WineDetailModal = ({ wine, onClose }) => {
               </div>
             </div>
 
+            <TasteRadarChart wine={wine} />
+
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-label">
                 Grapes
@@ -154,8 +156,6 @@ export const WineDetailModal = ({ wine, onClose }) => {
                 )}
               </div>
             </div>
-
-            <TasteRadarChart wine={wine} />
               
           </div>
         </div>
