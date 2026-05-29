@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/connection.js';
 import { fixUrl } from "../helpers/url.js";
+import redisClient from "../db/redis.js";
 
 const router = express.Router();
 
@@ -30,43 +31,83 @@ const mapToWineDTO = (wine) => {
 }
 
 router.get('/', async (req, res) => {
-
-  const { search } = req.query;
-  const limit = Number(req.query.limit) || 24;
-  const offset = Number(req.query.offset) || 0;
-
-  const values = [];
-  let whereClause = "";
-
   try {
-    if (search) {
-      values.push(`%${search}%`);
-      whereClause = `
-        WHERE name ILIKE $1
-        OR winery ILIKE $1
-        OR region_display ILIKE $1
-      `;
+    const search = req.query.search?.trim() || "";
+    let limit = Number(req.query.limit);
+    let offset = Number(req.query.offset);
+
+    if (isNaN(limit) || limit <= 0) limit = 24;
+    if (isNaN(offset) || offset < 0) offset = 0;
+    if (limit > 100) limit = 100;
+
+    // Create a unique Redis cache key, prevents different searches/pages from overwriting each other
+    const cacheKey = `wines:limit:${limit}:offset:${offset}`;
+
+    let winesDTO;
+
+    // Try Redis first
+    if (!search && redisClient) {
+      try {
+        const cached = await redisClient.get(cacheKey);
+        if (cached) {
+          winesDTO = JSON.parse(cached);
+        }
+      } catch (redisErr) {
+        console.error("Redis read error:", redisErr);
+      }
     }
 
-    values.push(limit, offset);
-    const limitParam = values.length - 1;
-    const offsetParam = values.length;
+    // If Redis missed, query DB
+    if (!winesDTO) {
+      const values = [];
+      let whereClause = "";
 
-    const result = await pool.query(
-      `
-        SELECT *
-        FROM wines
-        ${whereClause}
-        ORDER BY name
-        LIMIT $${limitParam}
-        OFFSET $${offsetParam}
-      `,
-      values
-    );
+      if (search) {
+        values.push(`%${search}%`);
 
-    const winesDTO = result.rows.map(mapToWineDTO);
+        whereClause = `
+          WHERE name ILIKE $1
+             OR winery ILIKE $1
+             OR region_display ILIKE $1
+        `;
+      }
 
-    res.status(200).json(winesDTO);
+      values.push(limit);
+      const limitParam = values.length;
+
+      values.push(offset);
+      const offsetParam = values.length;
+
+      // Add Paginition
+      const result = await pool.query(
+        `
+          SELECT *
+          FROM wines
+          ${whereClause}
+          ORDER BY name
+          LIMIT $${limitParam}
+          OFFSET $${offsetParam}
+        `,
+        values
+      );
+
+      winesDTO = result.rows.map(mapToWineDTO);
+
+      // Save DB result to Redis
+      if (!search && redisClient && winesDTO.length > 0) {
+        try {
+          await redisClient.setEx(
+            cacheKey,
+            60 * 10,
+            JSON.stringify(winesDTO)
+          );
+        } catch (redisErr) {
+          console.error("Redis write error:", redisErr);
+        }
+      }
+    }
+
+    return res.status(200).json(winesDTO);
   } catch (error) {
     console.error("GET /api/wines failed:", error);
     res.status(500).json({ error: 'Failed to fetch wines' });

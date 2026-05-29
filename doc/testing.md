@@ -3,11 +3,19 @@
 ## Clone The Repository
 
 ```bash
-git clone `https://github.com/sylviajsy/TasteVault.git`
-cd Taste_vault
+git clone https://github.com/sylviajsy/TasteVault.git
+cd TasteVault/Taste_vault
+```
+
+If you want to test a specific branch:
+
+```bash
+git checkout <branch_name>
 ```
 
 ## Install Dependencies
+
+Open two terminals or switch between folders as needed.
 
 ### Client
 
@@ -23,24 +31,41 @@ cd ../server
 npm install
 ```
 
-## Set Up Environment Variables
+## Environment Variables
 
-Create a `.env` file in `server/` and add the required backend variables.
+### Server
 
-Example:
+Create `server/.env`.
+
+Required:
 
 ```env
-DATABASE_URL=your_database_url
-OPENAI_API_KEY=your_openai_api_key
+DATABASE_URL=your_supabase_postgres_connection_string
 ```
 
-Create a `.env` file in `client/` and add:
+Optional:
+
+```env
+PORT=3001
+REDIS_URL=redis://localhost:6379
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+Notes:
+
+- `DATABASE_URL` is required. The server will not start without it.
+- `REDIS_URL` is optional. If it is missing, the app will still run without cache.
+- `GEMINI_API_KEY` is only needed if you want to test AI note generation.
+
+### Client
+
+Create `client/.env`.
 
 ```env
 VITE_API_URL=http://localhost:3001
 ```
 
-## Run The App
+## Run The App Locally
 
 ### Start The Server
 
@@ -50,6 +75,30 @@ From `server/`:
 npm start
 ```
 
+The API should run on:
+
+```text
+http://localhost:3001
+```
+
+You can also verify the backend is up by opening:
+
+```text
+http://localhost:3001/
+```
+
+It should return a JSON response showing server and database status.
+
+### Optional Redis
+
+If you want to test Redis caching locally and you already have Redis installed:
+
+```bash
+brew services start redis
+```
+
+If Redis is not running, the app should still work.
+
 ### Start The Client
 
 From `client/` in a separate terminal:
@@ -58,42 +107,96 @@ From `client/` in a separate terminal:
 npm run dev
 ```
 
-## Test The Website
-
-Go to desired branch
-```bash
-git checkout <branch_name>
-```
-
-Open the client URL shown by Vite in your browser, usually:
+Open the Vite URL shown in the terminal, usually:
 
 ```text
 http://localhost:5173
 ```
 
+## What The App Currently Does
+
+The current app includes:
+
+- a Discovery page for browsing and searching wines
+- a Journal page for viewing and creating tasting notes
+- a mock user flow on the backend for local development
+- optional AI note generation through the Gemini API
+
 ## Manual Testing Checklist
+
+### App Load
+
+- Confirm the frontend loads at `http://localhost:5173`.
+- Confirm the navbar appears.
+- Confirm the app fetches the current user without crashing.
 
 ### Discovery Page
 
-- Confirm the page loads.
-- Confirm wines are displayed as cards.
-- Confirm the search bar filters wine results.
+- Confirm Discovery page loads by default.
+- Confirm wine cards appear.
+- Confirm more wines load as you scroll.
+- Type in the search bar and confirm results update.
 - Click a wine card and confirm the wine detail modal opens.
-- Confirm the modal closes correctly.
+- Confirm the modal closes when you click the close button or outside the modal.
 
 ### Journal Page
 
 - Open the Journal page from the navbar.
-- Click `Add Tasting Note`.
-- Confirm the modal opens.
-- Search for a wine and confirm results appear.
-- Select one wine and confirm it fills the wine field.
-- Fill in price, sliders, flavors, and comment.
-- Click `Generate AI Note` and confirm text is generated if AI is configured.
-- Submit the form and confirm the tasting note saves successfully.
+- Confirm existing tasting notes load if your database has any.
+- If there are no notes, confirm the empty-state message appears.
+- Use the Journal search bar and confirm journal entries filter correctly.
+- Click a journal card and confirm the journal detail modal opens.
+- Confirm the journal detail modal closes correctly.
 
-## Notes
+### Add Tasting Note
 
-- Make sure the backend is running before testing the frontend.
-- If API requests fail, verify `VITE_API_URL` and server `.env` values.
-- If AI note generation fails, verify the OpenAI API key is set correctly.
+- On the Journal page, click `Add Tasting Note`.
+- Confirm the Add Note modal opens.
+- Search for a wine and confirm results appear in the wine picker.
+- Select a wine and confirm it is attached to the note.
+- Enter price and score.
+- Adjust the sliders for acidity, fizziness, intensity, sweetness, and tannin.
+- Select flavor groups and notes.
+- Unselect a flavor group and confirm that group disappears from selected flavors.
+- Add a written comment.
+- Submit the note and confirm it saves successfully.
+
+### AI Note Generation
+
+- This test only applies if `GEMINI_API_KEY` is set in `server/.env`.
+- In the Add Note modal, click `Generate AI Note`.
+- Confirm an AI tasting note is returned.
+- Confirm the generated note fits the tasting data you entered.
+
+## Automated Tests
+
+### Client Tests
+
+From `client/`:
+
+```bash
+npm test
+```
+
+Coverage:
+
+```bash
+npm run coverage
+```
+
+### Server Tests
+
+From `server/`:
+
+```bash
+npm test
+```
+
+## Troubleshooting
+
+- If the client cannot reach the backend, check `client/.env` and confirm `VITE_API_URL` points to the running server.
+- If the server fails on startup, confirm `DATABASE_URL` is present and valid.
+- If wine data does not appear, confirm your database has records in the `wines` table.
+- If journal features do not work, confirm your database has the expected tasting note tables and data.
+- If AI note generation fails, confirm `GEMINI_API_KEY` is set correctly.
+- If Redis errors appear, either start Redis locally or remove `REDIS_URL` from `server/.env`.

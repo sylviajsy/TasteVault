@@ -109,15 +109,21 @@ export const DiscoveryPage = () => {
     };
 
   return (
-    <div className="px-4 pb-10 md:px-6">
+    <div className="px-3 pb-10 sm:px-4 md:px-6">
         <h1>Discovery Page</h1>
         {loading && (
           <p className="mb-4 text-brand">
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={handleSearch}/>
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <GlobalSearchBar
+          id="discovery-search"
+          label="Search wines"
+          value={query}
+          onChange={setQuery}
+          onSearch={handleSearch}
+        />
+        <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 
                   key={wine.id}

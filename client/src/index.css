@@ -103,11 +103,12 @@
 body {
   margin: 0;
   background: var(--bg);
+  overflow-x: hidden;
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1126px;
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
@@ -115,6 +116,12 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  #root {
+    border-inline: 0;
+  }
 }
 
 h1,
@@ -133,6 +140,15 @@ h1 {
     margin: 20px 0;
   }
 }
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 30px;
+    letter-spacing: -0.8px;
+    margin: 16px 0;
+  }
+}
+
 h2 {
   font-size: 24px;
   line-height: 118%;
@@ -179,18 +195,18 @@ code {
   }
 
   .ui-button-primary {
-    @apply rounded-full border border-brand bg-brand px-5 py-2 text-sm font-semibold text-contrast transition hover:bg-brand-strong focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-surface-soft;
+    @apply rounded-full border border-brand bg-brand px-4 py-2 text-xs font-semibold text-contrast transition hover:bg-brand-strong focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-surface-soft sm:px-5 sm:text-sm;
   }
 
   .ui-floating-button {
-    @apply fixed bottom-6 right-6 z-40 rounded-full bg-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-contrast shadow-card transition hover:bg-brand-strong;
+    @apply fixed bottom-4 right-4 z-40 rounded-full bg-brand px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-contrast shadow-card transition hover:bg-brand-strong sm:bottom-6 sm:right-6 sm:px-6 sm:text-sm sm:tracking-[0.14em];
   }
 
   .ui-modal-shell {
-    @apply relative max-h-[90vh] w-full overflow-y-auto rounded-[2rem] border border-border bg-surface text-left shadow-modal;
+    @apply relative max-h-[90vh] w-full overflow-y-auto rounded-[1.5rem] border border-border bg-surface text-left shadow-modal sm:rounded-[2rem];
   }
 
   .ui-close-button {
-    @apply sticky top-4 z-20 ml-auto mr-4 mt-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand text-lg font-semibold text-contrast transition hover:bg-brand-strong;
+    @apply sticky top-3 z-20 ml-auto mr-3 mt-3 flex h-9 w-9 items-center justify-center rounded-full bg-brand text-base font-semibold text-contrast transition hover:bg-brand-strong sm:top-4 sm:mr-4 sm:mt-4 sm:h-10 sm:w-10 sm:text-lg;
   }
 }
