@@ -1,3 +1,5 @@
+import { TasteRadarChart } from "./TasteRadarChart";
+
 export const WineDetailModal = ({ wine, onClose }) => {
   if (!wine) {
     return null;
@@ -148,6 +150,8 @@ export const WineDetailModal = ({ wine, onClose }) => {
                 )}
               </div>
             </div>
+
+            <TasteRadarChart wines={wine} />
               
           </div>
         </div>
