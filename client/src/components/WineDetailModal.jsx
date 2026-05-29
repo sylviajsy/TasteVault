@@ -9,7 +9,7 @@ export const WineDetailModal = ({ wine, onClose }) => {
     value === null || value === undefined || value === "" ? fallback : value;
 
   const scaleOr = (value) =>
-    value === null || value === undefined || value === "" ? "N/A" : `${value}/10`;
+    value === null || value === undefined || value === "" ? "0/10" : `${value}/10`;
 
   const grapes = Array.isArray(wine.grapes) ? wine.grapes : [];
   const flavors = Array.isArray(wine.flavors) ? wine.flavors : [];
@@ -78,6 +78,10 @@ export const WineDetailModal = ({ wine, onClose }) => {
               <div className="ui-panel">
                 <p className="text-xs uppercase tracking-[0.16em] text-label">Acidity</p>
                 <p className="mt-1 font-semibold text-text">{scaleOr(wine.acidity)}</p>
+              </div>
+              <div className="ui-panel">
+                <p className="text-xs uppercase tracking-[0.16em] text-label">Fizziness</p>
+                <p className="mt-1 font-semibold text-text">{scaleOr(wine.fizziness)}</p>
               </div>
               <div className="ui-panel">
                 <p className="text-xs uppercase tracking-[0.16em] text-label">Tannin</p>
@@ -151,7 +155,7 @@ export const WineDetailModal = ({ wine, onClose }) => {
               </div>
             </div>
 
-            <TasteRadarChart wines={wine} />
+            <TasteRadarChart wine={wine} />
               
           </div>
         </div>
