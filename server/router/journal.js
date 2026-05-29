@@ -28,6 +28,7 @@ router.get('/', authMiddleware, async (req, res) => {
                 AND (
                     w.name ILIKE $2
                     OR w.winery ILIKE $2
+                    OR w.region_display ILIKE $2
                     OR tn.comment ILIKE $2
                     OR tn.user_flavor::text ILIKE $2
                 )
