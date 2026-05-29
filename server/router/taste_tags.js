@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 
         const etag = `"${crypto
           .createHash("md5")
-          .update(JSON.stringify(tags))
+          .update(cached)
           .digest("hex")}"`;
 
         if (req.get("if-none-match") === etag) {
