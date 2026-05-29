@@ -110,7 +110,7 @@ export const JournalDetailModal = ({ journal, onClose }) => {
               </div>
             </div>
 
-            
+            <TasteRadarChart wine={userStats} />
 
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-label">
