@@ -1,7 +1,5 @@
 # Testing Guide
 
-This guide explains how to run Taste Vault locally and how to test the current React app.
-
 ## Clone The Repository
 
 ```bash
