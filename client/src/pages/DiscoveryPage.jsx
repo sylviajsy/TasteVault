@@ -13,6 +13,7 @@ export const DiscoveryPage = () => {
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);  
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     // Create a ref to anchor the loaderRef element at the bottom of the list
     const loaderRef = useRef(null);
     const limit = 24;
@@ -50,19 +51,19 @@ export const DiscoveryPage = () => {
     // To next page
     useEffect(() => {
         const isReplace = page === 0;
-        loadWines(query, page, isReplace);
-    },[page, query, loadWines])
+        loadWines(debouncedQuery, page, isReplace);
+    },[page, debouncedQuery, loadWines])
 
     // New search query, page = 0
     useEffect(() => {
         setPage(0);
         setHasMore(true);
-    }, [query]);
+    }, [debouncedQuery]);
 
-    const stateRef = useRef({ page, query, hasMore, loading });
+    const stateRef = useRef({ page, query: debouncedQuery, hasMore, loading });
     useEffect(() => {
-        stateRef.current = { page, query, hasMore, loading };
-    }, [page, query, hasMore, loading]);
+        stateRef.current = { page, query: debouncedQuery, hasMore, loading };
+    }, [page, debouncedQuery, hasMore, loading]);
 
     // Infinite scroll observer
     useEffect(() => {
@@ -99,9 +100,7 @@ export const DiscoveryPage = () => {
     }
 
     const handleSearch = (value) => {
-        setPage(0);
-        setHasMore(true);
-        loadWines(value, 0, true);
+        setDebouncedQuery(value);
     };
 
     const handleCloseModal = () => {

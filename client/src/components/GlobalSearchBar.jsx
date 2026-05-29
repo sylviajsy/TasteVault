@@ -15,7 +15,7 @@ export const GlobalSearchBar = ({
         }, 500);
 
         return () => clearTimeout(timer);
-    }, [value])
+    }, [value, onSearch])
 
   return (
     <div className="mx-auto mb-6 w-full max-w-3xl bg-transparent p-1 sm:mb-8">
