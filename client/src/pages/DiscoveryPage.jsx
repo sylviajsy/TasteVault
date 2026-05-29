@@ -12,7 +12,6 @@ export const DiscoveryPage = () => {
     const [selectedWine, setSelectedWine] = useState(null);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);  
-    const [query, setQuery] = useState("");
     const [debouncedQuery, setDebouncedQuery] = useState("");
     // Create a ref to anchor the loaderRef element at the bottom of the list
     const loaderRef = useRef(null);
@@ -60,9 +59,9 @@ export const DiscoveryPage = () => {
         setHasMore(true);
     }, [debouncedQuery]);
 
-    const stateRef = useRef({ page, query: debouncedQuery, hasMore, loading });
+    const stateRef = useRef({ page, debouncedQuery, hasMore, loading });
     useEffect(() => {
-        stateRef.current = { page, query: debouncedQuery, hasMore, loading };
+        stateRef.current = { page, debouncedQuery, hasMore, loading };
     }, [page, debouncedQuery, hasMore, loading]);
 
     // Infinite scroll observer
@@ -118,8 +117,6 @@ export const DiscoveryPage = () => {
         <GlobalSearchBar
           id="discovery-search"
           label="Search wines"
-          value={query}
-          onChange={setQuery}
           onSearch={handleSearch}
         />
         <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
