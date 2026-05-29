@@ -1,4 +1,5 @@
 import { TasteRadarChart } from "./TasteRadarChart";
+import { WineAttributeCard } from "./WineAttributeCard";
 import { useEffect, useRef } from "react";
 
 export const JournalDetailModal = ({ journal, onClose }) => {
@@ -95,37 +96,16 @@ export const JournalDetailModal = ({ journal, onClose }) => {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Score</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(userStats.score)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Price</p>
-                <p className="mt-1 font-semibold text-text">{textOr(userStats.price)}</p>
-              </div>
+              <WineAttributeCard label="Score" value={scaleOr(userStats.score)} />
+              <WineAttributeCard label="Price" value={textOr(userStats.price)} />
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Acidity</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(userStats.acidity)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Fizziness</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(userStats.fizziness)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Intensity</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(userStats.intensity)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Sweetness</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(userStats.sweetness)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Tannin</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(userStats.tannin)}</p>
-              </div>
+              <WineAttributeCard label="Acidity" value={scaleOr(userStats.acidity)} />
+              <WineAttributeCard label="Fizziness" value={scaleOr(userStats.fizziness)} />
+              <WineAttributeCard label="Intensity" value={scaleOr(userStats.intensity)} />
+              <WineAttributeCard label="Sweetness" value={scaleOr(userStats.sweetness)} />
+              <WineAttributeCard label="Tannin" value={scaleOr(userStats.tannin)} />
             </div>
 
             <TasteRadarChart wine={userStats} />

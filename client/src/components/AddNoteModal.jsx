@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "react-toastify";
 import { GlobalSearchBar } from "./GlobalSearchBar";
 
-export const AddNoteModal = ({ onClose }) => {
+export const AddNoteModal = ({ onClose, onNoteAdded }) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [loading, setLoading] = useState(false);
@@ -109,10 +109,15 @@ export const AddNoteModal = ({ onClose }) => {
         return () => window.removeEventListener("keydown", handleEscape);
     }, [onClose]);
 
-    const handleWineSearch = async (searchTerm) => {
+    const handleWineSearch = useCallback(async (searchTerm) => {
         const cleaned = searchTerm.trim();
-        if (!cleaned || (selectedWine && cleaned === selectedWine.name)) {
+
+        if (!cleaned) {
             setWinesResults([]);
+            return;
+        }
+
+        if (selectedWine && cleaned === selectedWine.name) {
             return;
         }
 
@@ -133,7 +138,7 @@ export const AddNoteModal = ({ onClose }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [API_URL, selectedWine])
 
     const handleSelectWine = (wine) => {
         setSelectedWine(wine);
@@ -273,6 +278,9 @@ export const AddNoteModal = ({ onClose }) => {
             }
 
             toast.success("Tasting note saved!");
+
+            onNoteAdded?.();
+
             onClose();
         } catch (error) {
             console.error(error);

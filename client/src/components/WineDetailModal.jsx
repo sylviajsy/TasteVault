@@ -1,4 +1,5 @@
 import { TasteRadarChart } from "./TasteRadarChart";
+import { WineAttributeCard } from "./WineAttributeCard";
 import { useEffect, useRef } from "react";
 
 export const WineDetailModal = ({ wine, onClose }) => {
@@ -86,34 +87,13 @@ export const WineDetailModal = ({ wine, onClose }) => {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Region</p>
-                <p className="mt-1 font-semibold text-text">{safeRegion}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Vintage</p>
-                <p className="mt-1 font-semibold text-text">{textOr(wine.year)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Acidity</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.acidity)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Fizziness</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.fizziness)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Tannin</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.tannin)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Intensity</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.intensity)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Sweetness</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.sweetness)}</p>
-              </div>
+              <WineAttributeCard label="Region" value={safeRegion} />
+              <WineAttributeCard label="Vintage" value={textOr(wine.year)} />
+              <WineAttributeCard label="Acidity" value={scaleOr(wine.acidity)} />
+              <WineAttributeCard label="Fizziness" value={scaleOr(wine.fizziness)} />
+              <WineAttributeCard label="Tannin" value={scaleOr(wine.tannin)} />
+              <WineAttributeCard label="Intensity" value={scaleOr(wine.intensity)} />
+              <WineAttributeCard label="Sweetness" value={scaleOr(wine.sweetness)} />
             </div>
 
             <TasteRadarChart wine={wine} />

@@ -95,6 +95,7 @@ export const JournalPage = () => {
           {isAddNoteOpen && (
             <AddNoteModal
               onClose={() => setIsAddNoteOpen(false)}
+              onNoteAdded={loadNote}
             />
           )}
         </div>
