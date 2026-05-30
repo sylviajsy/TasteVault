@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 import { AddNoteModal } from '../components/AddNoteModal';
 import { GlobalSearchBar } from "../components/GlobalSearchBar";
@@ -12,9 +12,8 @@ export const JournalPage = () => {
   const [journal, setJournal] = useState([]);
   const [selectedJournal, setSelectedJournal] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState("");
 
-  const loadNote = async (searchTerm="") => {
+  const loadNote = useCallback(async (searchTerm="") => {
     const search = searchTerm.replace(/\s+/g, " ").trim();
     try {
       setLoading(true);
@@ -40,11 +39,11 @@ export const JournalPage = () => {
     } finally {
       setLoading(false);
     }
-  }
+  }, [API_URL])
 
   useEffect(() => {
     loadNote();
-  }, [])
+  }, [loadNote])
 
   const handleSelectedJournal = (note) => {
     setSelectedJournal(note);
@@ -55,7 +54,7 @@ export const JournalPage = () => {
   }
 
   return (
-    <div className="px-4 pb-10 md:px-6">
+    <div className="px-3 pb-24 sm:px-4 sm:pb-10 md:px-6">
         <h1>JournalPage</h1>
 
         {loading && <p className="text-brand">Loading journal...</p>}
@@ -64,7 +63,11 @@ export const JournalPage = () => {
           <p className="text-text-soft">No tasting notes yet. Add your first tasting note!</p>
         )}
 
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={loadNote}/>
+        <GlobalSearchBar
+          id="journal-search"
+          label="Search tasting notes"
+          onSearch={loadNote}
+        />
 
         <div className="space-y-6">
           {journal.map((note) => (
@@ -92,6 +95,7 @@ export const JournalPage = () => {
           {isAddNoteOpen && (
             <AddNoteModal
               onClose={() => setIsAddNoteOpen(false)}
+              onNoteAdded={loadNote}
             />
           )}
         </div>

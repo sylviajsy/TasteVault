@@ -16,6 +16,8 @@ The app is designed for both casual wine drinkers and enthusiasts who want to be
 4. 📚 Wine Journal
    - View and search past tasting note
 
+https://github.com/user-attachments/assets/c02a67a7-8628-4e8e-bef4-e0ddef972dff
+
 ## 🧱 Tech Stack
 - Frontend: React + Vite + Tailwind CSS
 - Backend: Supabase (PostgreSQL + Auth + RLS) + Express.js + Node.js

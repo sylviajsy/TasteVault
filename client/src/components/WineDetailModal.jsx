@@ -1,3 +1,7 @@
+import { TasteRadarChart } from "./TasteRadarChart";
+import { WineAttributeCard } from "./WineAttributeCard";
+import { useEffect, useRef } from "react";
+
 export const WineDetailModal = ({ wine, onClose }) => {
   if (!wine) {
     return null;
@@ -7,7 +11,7 @@ export const WineDetailModal = ({ wine, onClose }) => {
     value === null || value === undefined || value === "" ? fallback : value;
 
   const scaleOr = (value) =>
-    value === null || value === undefined || value === "" ? "N/A" : `${value}/10`;
+    value === null || value === undefined || value === "" ? "0/10" : `${value}/10`;
 
   const grapes = Array.isArray(wine.grapes) ? wine.grapes : [];
   const flavors = Array.isArray(wine.flavors) ? wine.flavors : [];
@@ -15,6 +19,19 @@ export const WineDetailModal = ({ wine, onClose }) => {
   const safeWinery = textOr(wine.winery, "Unknown Winery");
   const safeRegion = textOr(wine.region, "Region unavailable");
   const safePrice = textOr(wine.price);
+  const closeButtonRef = useRef(null);
+  const titleId = "wine-detail-title";
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [onClose]);
 
   return (
     <div
@@ -24,9 +41,14 @@ export const WineDetailModal = ({ wine, onClose }) => {
       <div
         className="ui-modal-shell max-w-4xl"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
       >
         <button
+          ref={closeButtonRef}
           type="button"
+          aria-label="Close modal"
           className="ui-close-button"
           onClick={onClose}
         >
@@ -53,7 +75,7 @@ export const WineDetailModal = ({ wine, onClose }) => {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-label">
                 {safeRegion}
               </p>
-              <h2 className="text-3xl font-semibold text-text">
+              <h2 id={titleId} className="text-3xl font-semibold text-text">
                 {safeName}
               </h2>
               <p className="text-base text-text-soft">
@@ -65,31 +87,16 @@ export const WineDetailModal = ({ wine, onClose }) => {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Region</p>
-                <p className="mt-1 font-semibold text-text">{safeRegion}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Vintage</p>
-                <p className="mt-1 font-semibold text-text">{textOr(wine.year)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Acidity</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.acidity)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Tannin</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.tannin)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Intensity</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.intensity)}</p>
-              </div>
-              <div className="ui-panel">
-                <p className="text-xs uppercase tracking-[0.16em] text-label">Sweetness</p>
-                <p className="mt-1 font-semibold text-text">{scaleOr(wine.sweetness)}</p>
-              </div>
+              <WineAttributeCard label="Region" value={safeRegion} />
+              <WineAttributeCard label="Vintage" value={textOr(wine.year)} />
+              <WineAttributeCard label="Acidity" value={scaleOr(wine.acidity)} />
+              <WineAttributeCard label="Fizziness" value={scaleOr(wine.fizziness)} />
+              <WineAttributeCard label="Tannin" value={scaleOr(wine.tannin)} />
+              <WineAttributeCard label="Intensity" value={scaleOr(wine.intensity)} />
+              <WineAttributeCard label="Sweetness" value={scaleOr(wine.sweetness)} />
             </div>
+
+            <TasteRadarChart wine={wine} />
 
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-label">

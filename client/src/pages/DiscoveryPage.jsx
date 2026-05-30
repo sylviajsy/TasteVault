@@ -12,7 +12,7 @@ export const DiscoveryPage = () => {
     const [selectedWine, setSelectedWine] = useState(null);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);  
-    const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     // Create a ref to anchor the loaderRef element at the bottom of the list
     const loaderRef = useRef(null);
     const limit = 24;
@@ -50,19 +50,19 @@ export const DiscoveryPage = () => {
     // To next page
     useEffect(() => {
         const isReplace = page === 0;
-        loadWines(query, page, isReplace);
-    },[page, query, loadWines])
+        loadWines(debouncedQuery, page, isReplace);
+    },[page, debouncedQuery, loadWines])
 
     // New search query, page = 0
     useEffect(() => {
         setPage(0);
         setHasMore(true);
-    }, [query]);
+    }, [debouncedQuery]);
 
-    const stateRef = useRef({ page, query, hasMore, loading });
+    const stateRef = useRef({ page, debouncedQuery, hasMore, loading });
     useEffect(() => {
-        stateRef.current = { page, query, hasMore, loading };
-    }, [page, query, hasMore, loading]);
+        stateRef.current = { page, debouncedQuery, hasMore, loading };
+    }, [page, debouncedQuery, hasMore, loading]);
 
     // Infinite scroll observer
     useEffect(() => {
@@ -99,9 +99,7 @@ export const DiscoveryPage = () => {
     }
 
     const handleSearch = (value) => {
-        setPage(0);
-        setHasMore(true);
-        loadWines(value, 0, true);
+        setDebouncedQuery(value);
     };
 
     const handleCloseModal = () => {
@@ -109,15 +107,19 @@ export const DiscoveryPage = () => {
     };
 
   return (
-    <div className="px-4 pb-10 md:px-6">
+    <div className="px-3 pb-10 sm:px-4 md:px-6">
         <h1>Discovery Page</h1>
         {loading && (
           <p className="mb-4 text-brand">
             Loading wines...
           </p>
         )}
-        <GlobalSearchBar value={query} onChange={setQuery} onSearch={handleSearch}/>
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <GlobalSearchBar
+          id="discovery-search"
+          label="Search wines"
+          onSearch={handleSearch}
+        />
+        <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {wines.map((wine) => (
               <WineCard 
                   key={wine.id}

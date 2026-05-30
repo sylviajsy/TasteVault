@@ -59,7 +59,7 @@ function App() {
 
       <Navbar />
 
-      <main className="pt-28 md:pt-24">
+      <main className="pt-24 sm:pt-28 md:pt-24">
         <Routes>
           <Route path="/" element={<DiscoveryPage />} />
           <Route path="/journal" element={<JournalPage />} />
