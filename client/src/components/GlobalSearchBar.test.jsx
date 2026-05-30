@@ -31,8 +31,6 @@ describe('Global Search Bar', () => {
     })
 
     test("calls onSearch after debounce", () => {
-        vi.useFakeTimers();
-
         const onSearch = vi.fn();
 
         render(
@@ -43,29 +41,45 @@ describe('Global Search Bar', () => {
             />
         );
 
-        vi.advanceTimersByTime(500);
+        vi.advanceTimersByTime(499);
+
+        expect(onSearch).not.toHaveBeenCalled();
+
+        vi.advanceTimersByTime(1);
         
-        // assert callback
         expect(onSearch).toHaveBeenCalledWith("Cabernet");
+        expect(onSearch).toHaveBeenCalledTimes(1);
     });
 
-    test("does not call onSearch for empty input", () => {
-        vi.useFakeTimers();
-
+    test("calls onSearch with trimmed input after debounce", () => {
         const onSearch = vi.fn();
 
         render(
             <GlobalSearchBar
-            value="   "
-            onChange={vi.fn()}
-            onSearch={onSearch}
+                value="   Cabernet   Sauvignon   "
+                onChange={vi.fn()}
+                onSearch={onSearch}
             />
         );
 
         vi.advanceTimersByTime(500);
 
-        expect(onSearch).not.toHaveBeenCalled();
+        expect(onSearch).toHaveBeenCalledWith("Cabernet Sauvignon");
+    });
 
-        vi.useRealTimers();
+    test("calls onSearch with empty string when input is only whitespace", () => {
+        const onSearch = vi.fn();
+
+        render(
+            <GlobalSearchBar
+                value="   "
+                onChange={vi.fn()}
+                onSearch={onSearch}
+            />
+        );
+
+        vi.advanceTimersByTime(500);
+
+        expect(onSearch).toHaveBeenCalledWith("");
     });
 })

@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "react-toastify";
 import { GlobalSearchBar } from "./GlobalSearchBar";
 
-export const AddNoteModal = ({ onClose }) => {
+export const AddNoteModal = ({ onClose, onNoteAdded }) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [loading, setLoading] = useState(false);
@@ -109,7 +109,18 @@ export const AddNoteModal = ({ onClose }) => {
         return () => window.removeEventListener("keydown", handleEscape);
     }, [onClose]);
 
-    const handleWineSearch = async (searchTerm) => {
+    const handleWineSearch = useCallback(async (searchTerm) => {
+        const cleaned = searchTerm.trim();
+
+        if (!cleaned) {
+            setWinesResults([]);
+            return;
+        }
+
+        if (selectedWine && cleaned === selectedWine.name) {
+            return;
+        }
+
         try {
             setLoading(true);
 
@@ -127,7 +138,7 @@ export const AddNoteModal = ({ onClose }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [API_URL, selectedWine])
 
     const handleSelectWine = (wine) => {
         setSelectedWine(wine);
@@ -156,20 +167,6 @@ export const AddNoteModal = ({ onClose }) => {
             ...prev,
             [name]: value,
         }));
-    };
-
-    const handleWineSearchChange = (value) => {
-        setSearchInput(value);
-
-        console.log("Selecting wine with ID:", value.id);
-        if (selectedWine && value !== selectedWine.name) {
-            setSelectedWine(null);
-
-            setFormData((prev) => ({
-                ...prev,
-                wine_id: null,
-            }));
-        }
     };
 
     const handleSliderChange = (e) => {
@@ -281,6 +278,9 @@ export const AddNoteModal = ({ onClose }) => {
             }
 
             toast.success("Tasting note saved!");
+
+            onNoteAdded?.();
+
             onClose();
         } catch (error) {
             console.error(error);
@@ -328,7 +328,6 @@ export const AddNoteModal = ({ onClose }) => {
 
                 <GlobalSearchBar 
                     value={searchInput}
-                    onChange={handleWineSearchChange}
                     onSearch={handleWineSearch}
                     id="wine-search"
                     label="Search for a wine"
