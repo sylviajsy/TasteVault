@@ -69,11 +69,33 @@ function App() {
       </main>
     </Router>
   ) : (
-    <div>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-surface-soft via-surface to-tint px-4">
+      <div className="w-full max-w-xl rounded-[2rem] bg-surface/95 px-8 py-10 text-center shadow-card backdrop-blur">
+        <div className="flex flex-col items-center">
+        <h1 className="text-5xl font-semibold tracking-[-0.04em] text-text sm:text-6xl">
+          Taste Vault
+        </h1>
+        <p className="mt-4 max-w-md text-base leading-7 text-text-soft sm:text-lg">
+          Discover wines, and build a personal cellar of what you loved.
+        </p>
+        </div>
 
-      <button onClick={signup}>Signup</button>
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <button
+            onClick={signup}
+            className="rounded-full bg-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-contrast shadow-card transition hover:bg-brand-strong"
+          >
+            Signup
+          </button>
 
-      <button onClick={login}>Login</button>
+          <button
+            onClick={login}
+            className="rounded-full border border-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-brand transition hover:bg-surface-deep"
+          >
+            Login
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
