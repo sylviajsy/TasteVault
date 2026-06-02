@@ -8,47 +8,45 @@ import { useEffect } from 'react';
 import Navbar from './components/Navbar.jsx';
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setCurrentUser,
-  setLoadingUser,
-  setUserError,
+  setCurrentUser
 } from "./store/userSlice";
-
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const dispatch = useDispatch();
-  const { currentUser, loadingUser, error } = useSelector(
+
+  const { currentUser } = useSelector(
     (state) => state.user
   );
+
+  const {
+    isLoading, // Loading state, the SDK needs to reach Auth0 on load
+    isAuthenticated,
+    loginWithRedirect: login, // Starts the login flow
+    logout: auth0Logout, // Starts the logout flow
+    user, // User profile
+  } = useAuth0();
+
+  const signup = () =>
+    login({ authorizationParams: { screen_hint: "signup" } });
+
+  const logout = () =>
+    auth0Logout({ logoutParams: { returnTo: window.location.origin } });
+
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    async function fetchUser() {
-      try {
-        dispatch(setLoadingUser(true));
-
-        const res = await fetch(`${API_URL}/api/user`);
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch user");
-        }
-
-        const data = await res.json();
-        dispatch(setCurrentUser(data));
-        console.log('user data', data);
-      } catch (err) {
-        dispatch(setUserError(err.message));
-      } finally {
-        dispatch(setLoadingUser(false));
-      }
+    if (isAuthenticated && user){
+      dispatch(setCurrentUser(user));
+      console.log('Auth0 User synchronized to Redux:', user);
+    } else if (!isLoading && !isAuthenticated) {
+      dispatch(setCurrentUser(null));
     }
+  }, [isAuthenticated, user, isLoading, dispatch]);
 
-    fetchUser();
-  }, [dispatch]);
+  if (isLoading) return <p>Loading user...</p>;
 
-  if (loadingUser) return <p>Loading user...</p>;
-  if (error) return <p>Error: {error}</p>;
-
-  return (
+  return isAuthenticated ? (
     <Router>
       <ToastContainer position="top-center"
             autoClose={3000}
@@ -58,6 +56,7 @@ function App() {
             }} />
 
       <Navbar />
+      <button onClick={logout}>Logout</button>
 
       <main className="pt-24 sm:pt-28 md:pt-24">
         <Routes>
@@ -69,7 +68,14 @@ function App() {
         </Routes>
       </main>
     </Router>
+  ) : (
+    <div>
+
+      <button onClick={signup}>Signup</button>
+
+      <button onClick={login}>Login</button>
+    </div>
   )
 }
 
-export default App
+export default App;
