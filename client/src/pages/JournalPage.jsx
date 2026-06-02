@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
+import { useAuth0 } from '@auth0/auth0-react';
 import { AddNoteModal } from '../components/AddNoteModal';
 import { GlobalSearchBar } from "../components/GlobalSearchBar";
 import { JournalCard } from "../components/JournalCard";
@@ -12,14 +13,21 @@ export const JournalPage = () => {
   const [journal, setJournal] = useState([]);
   const [selectedJournal, setSelectedJournal] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 
   const loadNote = useCallback(async (searchTerm="") => {
+    if (!isAuthenticated) return;
+
     const search = searchTerm.replace(/\s+/g, " ").trim();
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
-
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: audience,
+        }
+      });
       const res = await fetch(`${API_URL}/api/journal?search=${encodeURIComponent(search)}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -39,7 +47,7 @@ export const JournalPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [API_URL])
+  }, [API_URL, getAccessTokenSilently, isAuthenticated])
 
   useEffect(() => {
     loadNote();
