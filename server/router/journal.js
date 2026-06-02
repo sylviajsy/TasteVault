@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.auth.payload.sub;
         const search = req.query.search?.trim();
 
         let query = `
@@ -59,7 +59,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 router.get('/:id', authMiddleware, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.auth.payload.sub;
         const noteId = req.params.id;
 
         const result = await pool.query(
@@ -93,9 +93,9 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
 router.post('/', authMiddleware, async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.auth.payload.sub;
 
-        const dto = mapJournalInputDTO(req.body, req.user.id);
+        const dto = mapJournalInputDTO(req.body, userId);
 
         if (!dto.wineId) {
             return res.status(400).json({ error: "wine_id is required" });
