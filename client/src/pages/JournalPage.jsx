@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "react-toastify";
 import { useAuth0 } from '@auth0/auth0-react';
 import { AddNoteModal } from '../components/AddNoteModal';
@@ -15,12 +15,18 @@ export const JournalPage = () => {
   const [loading, setLoading] = useState(false);
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
   const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
+  const isFetchingRef = useRef(false);
 
   const loadNote = useCallback(async (searchTerm="") => {
     if (!isAuthenticated) return;
 
+    if (isFetchingRef.current) {
+      return;
+    }
+
     const search = searchTerm.replace(/\s+/g, " ").trim();
     try {
+      isFetchingRef.current = true;
       setLoading(true);
 
       const token = await getAccessTokenSilently({
@@ -46,8 +52,9 @@ export const JournalPage = () => {
       toast.error(error.message);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
-  }, [API_URL, getAccessTokenSilently, isAuthenticated])
+  }, [API_URL, audience, getAccessTokenSilently, isAuthenticated])
 
   useEffect(() => {
     loadNote();
