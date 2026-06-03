@@ -56,7 +56,6 @@ function App() {
             }} />
 
       <Navbar />
-      <button onClick={logout}>Logout</button>
 
       <main className="pt-24 sm:pt-28 md:pt-24">
         <Routes>
