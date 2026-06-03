@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "react-toastify";
+import { useAuth0 } from '@auth0/auth0-react';
 import { GlobalSearchBar } from "./GlobalSearchBar";
 
 export const AddNoteModal = ({ onClose, onNoteAdded }) => {
@@ -26,6 +27,8 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedText, setGeneratedText] = useState("");
     const closeButtonRef = useRef(null);
+    const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
     const titleId = "add-note-modal-title";
 
     const sliderFields = [
@@ -53,9 +56,14 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
     };
 
     const handleGenerateNote = async () => {
+        if (!isAuthenticated) return;
         try {
             setIsGenerating(true);
-            const token = localStorage.getItem("token");
+            const token = await getAccessTokenSilently({
+                    authorizationParams: {
+                        audience: audience,
+                }
+            });
 
             const res = await fetch(`${API_URL}/api/ai/generate-note`, {
                 method: "POST",
@@ -257,10 +265,20 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
             return;
         }
 
+        if (!isAuthenticated) {
+            toast.error("Please log in first.");
+            return;
+        }
+
         try {
             setLoading(true);
 
-            const token = localStorage.getItem("token");
+            const token = await getAccessTokenSilently({
+                authorizationParams: {
+                    audience: audience,
+                    scope: 'openid profile email'
+                }
+            });
 
             const res = await fetch(`${API_URL}/api/journal`, {
                 method: "POST",

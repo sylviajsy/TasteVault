@@ -24,8 +24,8 @@ export const JournalPage = () => {
       setLoading(true);
 
       const token = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: audience,
+          authorizationParams: {
+            audience: audience,
         }
       });
       const res = await fetch(`${API_URL}/api/journal?search=${encodeURIComponent(search)}`, {

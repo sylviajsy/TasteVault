@@ -94,7 +94,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
 router.post('/', authMiddleware, async (req, res) => {
     try {
-        const userId = req.auth.payload.sub;
+        const userId = await getUuidByAuth0Id(req.auth.payload.sub);
 
         const dto = mapJournalInputDTO(req.body, userId);
 
@@ -121,7 +121,7 @@ router.post('/', authMiddleware, async (req, res) => {
             RETURNING *
         `,
         [
-            userId,
+            dto.userId,
             dto.wineId,
             dto.price,
             dto.score,
