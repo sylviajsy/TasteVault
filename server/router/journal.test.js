@@ -1,7 +1,5 @@
 import request from "supertest";
 import { test, expect, describe, vi, afterEach } from 'vitest';
-import app from "../src/index.js";
-import pool from "../db/connection.js";
 import { mockJournalInput } from "../../test-data/journal.js";
 
 vi.mock("../db/connection.js", () => ({
@@ -9,6 +7,29 @@ vi.mock("../db/connection.js", () => ({
     query: vi.fn(),
   },
 }));
+
+vi.mock("../middleware/authMiddleware.js", () => {
+  const mockMiddleware = (req, _res, next) => {
+    req.auth = {
+      payload: {
+        sub: "auth0|test-user",
+        email: "test@test.com"
+      },
+    };
+    next();
+  };
+  return {
+    authMiddleware: mockMiddleware,
+    default: mockMiddleware
+  };
+});
+
+vi.mock("../helpers/getUuidByAuth0Id.js", () => ({
+  getUuidByAuth0Id: vi.fn().mockResolvedValue("test-user-id"),
+}));
+
+const { default: app } = await import("../src/index.js");
+const { default: pool } = await import("../db/connection.js");
 
 describe('Journal Routes', () => {
     afterEach(() => {
