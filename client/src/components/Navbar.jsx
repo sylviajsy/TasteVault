@@ -1,13 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from "react-redux";
-import { selectDisplayName } from "../store/userSlice";
 import { useAuth0 } from '@auth0/auth0-react';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
-  const displayName = useSelector(selectDisplayName);
+  const { user } = useAuth0();
   const { logout, isAuthenticated } = useAuth0();
   const menuId = "explore-menu";
   const userMenuId = "user-menu";
@@ -101,7 +99,7 @@ function Navbar() {
                 aria-controls={userMenuId}
                 className="flex items-center gap-1 text-xs font-semibold text-brand transition hover:text-brand-strong sm:text-sm active:scale-95"
               >
-                Hi, {displayName}
+                Hi, {user.nickname}
                 <span className={`inline-block transition-transform duration-200 ${isUserOpen ? 'rotate-180' : ''}`}>
                   ▾
                 </span>
