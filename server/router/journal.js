@@ -6,7 +6,7 @@ import { getUuidByAuth0Id } from '../helpers/getUuidByAuth0Id.js';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const userId = await getUuidByAuth0Id(req.auth.payload.sub);
         const search = req.query.search?.trim();
@@ -58,7 +58,7 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 })
 
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const userId = await getUuidByAuth0Id(req.auth.payload.sub);
         const noteId = req.params.id;
@@ -92,7 +92,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
     }
 })
 
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const userId = await getUuidByAuth0Id(req.auth.payload.sub);
 
