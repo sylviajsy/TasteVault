@@ -1,12 +1,14 @@
-const MOCK_USER_ID = 'c93caa23-6ccc-4ee9-8e2e-1dafc8e3caba';
+import { auth } from 'express-oauth2-jwt-bearer';
+import dotenv from 'dotenv';
 
-export const authMiddleware = (req, res, next) => {
-  // Mock user
-  req.user = {
-    id: MOCK_USER_ID,
-    email: 'siyi@example.com'
-  };
-  next();
-};
+// Read .env
+dotenv.config();
+
+export const authMiddleware = auth({
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
+  // JWT Token Signing Algorithm
+  tokenSigningAlg: 'RS256',
+});
 
 export default authMiddleware;

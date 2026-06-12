@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use('/api/user',authMiddleware, userRouter);
 app.use('/api/wines', winesRouter);
-app.use('/api/journal', journalRouter);
+app.use('/api/journal', authMiddleware, journalRouter);
 app.use('/api/tasteTags', tasteTagsRouter);
 app.use('/api/ai', aiRouter);
 

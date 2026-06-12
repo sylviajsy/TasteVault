@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.auth.payload.sub;
     const result = await pool.query(
       'SELECT * FROM profiles WHERE user_id = $1',
       [userId]

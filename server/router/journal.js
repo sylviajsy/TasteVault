@@ -2,12 +2,13 @@ import express from 'express';
 import pool from '../db/connection.js';
 import authMiddleware from "../middleware/authMiddleware.js";
 import { mapJournalInputDTO, mapJournalOutputDTO } from '../helpers/journalDTO.js';
+import { getUuidByAuth0Id } from '../helpers/getUuidByAuth0Id.js';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = await getUuidByAuth0Id(req.auth.payload.sub);
         const search = req.query.search?.trim();
 
         let query = `
@@ -57,9 +58,9 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 })
 
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = await getUuidByAuth0Id(req.auth.payload.sub);
         const noteId = req.params.id;
 
         const result = await pool.query(
@@ -91,11 +92,11 @@ router.get('/:id', authMiddleware, async (req, res) => {
     }
 })
 
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = await getUuidByAuth0Id(req.auth.payload.sub);
 
-        const dto = mapJournalInputDTO(req.body, req.user.id);
+        const dto = mapJournalInputDTO(req.body, userId);
 
         if (!dto.wineId) {
             return res.status(400).json({ error: "wine_id is required" });
@@ -120,7 +121,7 @@ router.post('/', authMiddleware, async (req, res) => {
             RETURNING *
         `,
         [
-            userId,
+            dto.userId,
             dto.wineId,
             dto.price,
             dto.score,
