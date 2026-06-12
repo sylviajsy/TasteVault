@@ -6,7 +6,8 @@ import { GlobalSearchBar } from "./GlobalSearchBar";
 export const AddNoteModal = ({ onClose, onNoteAdded }) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
-    const [loading, setLoading] = useState(false);
+    const [isSearchingWines, setIsSearchingWines] = useState(false);
+    const [isSavingNote, setIsSavingNote] = useState(false);
     const [winesResults, setWinesResults] = useState([]);
     const [selectedWine, setSelectedWine] = useState(null);
     const [searchInput, setSearchInput] = useState("");
@@ -133,7 +134,7 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
         }
 
         try {
-            setLoading(true);
+            setIsSearchingWines(true);
 
             const res = await fetch(`${API_URL}/api/wines?search=${encodeURIComponent(searchTerm)}`);
             const data = await res.json();
@@ -147,7 +148,7 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
             console.error(error);
             toast.error(error.message);
         } finally {
-            setLoading(false);
+            setIsSearchingWines(false);
         }
     }, [API_URL, selectedWine])
 
@@ -274,7 +275,7 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
         }
 
         try {
-            setLoading(true);
+            setIsSavingNote(true);
 
             const token = await getAccessTokenSilently({
                 authorizationParams: {
@@ -307,7 +308,7 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
             console.error(error);
             toast.error(error.message);
         } finally {
-            setLoading(false);
+            setIsSavingNote(false);
         }
     }
 
@@ -353,7 +354,7 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
                     id="wine-search"
                     label="Search for a wine"
                 />
-                    {loading && (
+                    {isSearchingWines && (
                         <p className="mt-3 text-sm text-[#7a4c43]">Searching wines...</p>
                     )}
 
@@ -548,9 +549,10 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
             <div className="flex justify-end">
                 <button
                     type="submit"
-                    className="rounded-full bg-[#6f102e] px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#fff9f2] transition hover:bg-[#581024]"
+                    disabled={isSavingNote}
+                    className="rounded-full bg-[#6f102e] px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#fff9f2] transition hover:bg-[#581024] disabled:cursor-not-allowed disabled:bg-[#9f5066]"
                 >
-                    Submit
+                    {isSavingNote ? "Saving..." : "Submit"}
                 </button>
             </div>
         </form>
