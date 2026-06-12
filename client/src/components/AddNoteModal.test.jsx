@@ -12,6 +12,14 @@ vi.mock("react-toastify", () => ({
   },
 }));
 
+vi.mock("@auth0/auth0-react", () => ({
+  useAuth0: () => ({
+    isAuthenticated: true,
+    getAccessTokenSilently: vi.fn().mockResolvedValue("fake-token"),
+    loginWithRedirect: vi.fn(),
+  }),
+}));
+
 const mockTags = [
   { id: 1, group_name: "fruit", tag_name: "blackberry" }
 ];

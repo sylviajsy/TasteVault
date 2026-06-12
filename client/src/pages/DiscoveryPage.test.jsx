@@ -44,6 +44,11 @@ describe("DiscoveryPage", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         global.fetch = vi.fn();
+        global.IntersectionObserver = vi.fn(() => ({
+          observe: vi.fn(),
+          unobserve: vi.fn(),
+          disconnect: vi.fn(),
+        }));
     });
 
     test("renders wines after fetch", async () => {
