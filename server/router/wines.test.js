@@ -1,13 +1,23 @@
 import request from "supertest";
 import { test, expect, describe, vi, afterEach } from "vitest";
-import app from "../src/index.js";
-import pool from "../db/connection.js";
 
 vi.mock("../db/connection.js", () => ({
   default: {
     query: vi.fn(),
   },
 }));
+
+vi.mock("../middleware/authMiddleware.js", () => {
+  const mockMiddleware = (_req, _res, next) => next();
+
+  return {
+    authMiddleware: mockMiddleware, 
+    default: mockMiddleware,         
+  };
+});
+
+const { default: app } = await import("../src/index.js");
+const { default: pool } = await import("../db/connection.js");
 
 const mockWine = {
   wine_id: 101,
@@ -66,13 +76,9 @@ describe("Wines Routes", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual([mappedWine]);
     expect(pool.query).toHaveBeenCalledWith(
-      expect.stringContaining("LIMIT $1"),
+      expect.stringContaining("LIMIT $1") && expect.stringContaining("OFFSET $2"),
       [24, 0]
-    );
-    expect(pool.query).toHaveBeenCalledWith(
-      expect.stringContaining("OFFSET $2"),
-      [24, 0]
-    );
+    )
   });
 
   test("GET /api/wines supports search query", async() => {

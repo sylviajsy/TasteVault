@@ -63,7 +63,23 @@ Create `client/.env`.
 
 ```env
 VITE_API_URL=http://localhost:3001
+VITE_AUTH0_DOMAIN=your-auth0-domain
+VITE_AUTH0_CLIENT_ID=your-auth0-client-id
+VITE_AUTH0_AUDIENCE=your-auth0-api-audience
 ```
+
+Auth0 is required for the current client login flow.
+
+In your Auth0 application settings, make sure these local URLs are allowed:
+
+- Allowed Callback URLs: `http://localhost:5173/`
+- Allowed Logout URLs: `http://localhost:5173`
+- Allowed Web Origins: `http://localhost:5173`
+
+Notes:
+
+- `VITE_AUTH0_DOMAIN`, `VITE_AUTH0_CLIENT_ID`, and `VITE_AUTH0_AUDIENCE` are required for the frontend to load Auth0 correctly.
+- The client currently uses Auth0 login/signup before showing the main app.
 
 ## Run The App Locally
 
@@ -127,7 +143,10 @@ The current app includes:
 ### App Load
 
 - Confirm the frontend loads at `http://localhost:5173`.
-- Confirm the navbar appears.
+- Confirm the Auth0 landing page appears if you are not logged in.
+- Confirm `Signup` and `Login` buttons are visible.
+- Confirm login redirects to Auth0 and returns to `http://localhost:5173/`.
+- After login, confirm the navbar appears.
 - Confirm the app fetches the current user without crashing.
 
 ### Discovery Page
@@ -147,6 +166,14 @@ The current app includes:
 - Use the Journal search bar and confirm journal entries filter correctly.
 - Click a journal card and confirm the journal detail modal opens.
 - Confirm the journal detail modal closes correctly.
+
+### Auth0
+
+- Click `Signup` and confirm Auth0 opens the signup flow.
+- Click `Login` and confirm Auth0 opens the login flow.
+- After authenticating, confirm you are redirected back to the app.
+- Refresh the page and confirm the session is still recognized.
+- Log out and confirm you return to the logged-out landing page.
 
 ### Add Tasting Note
 
@@ -195,6 +222,8 @@ npm test
 ## Troubleshooting
 
 - If the client cannot reach the backend, check `client/.env` and confirm `VITE_API_URL` points to the running server.
+- If login fails before the app loads, verify `VITE_AUTH0_DOMAIN`, `VITE_AUTH0_CLIENT_ID`, and `VITE_AUTH0_AUDIENCE` in `client/.env`.
+- If Auth0 redirects fail, verify the allowed callback, logout, and web origin URLs in the Auth0 dashboard.
 - If the server fails on startup, confirm `DATABASE_URL` is present and valid.
 - If wine data does not appear, confirm your database has records in the `wines` table.
 - If journal features do not work, confirm your database has the expected tasting note tables and data.
