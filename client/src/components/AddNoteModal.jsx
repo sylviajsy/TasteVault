@@ -27,7 +27,7 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedText, setGeneratedText] = useState("");
     const closeButtonRef = useRef(null);
-    const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
     const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
     const titleId = "add-note-modal-title";
 
@@ -56,7 +56,10 @@ export const AddNoteModal = ({ onClose, onNoteAdded }) => {
     };
 
     const handleGenerateNote = async () => {
-        if (!isAuthenticated) return;
+        if (!isAuthenticated) {
+            loginWithRedirect();
+            return;
+        }
         try {
             setIsGenerating(true);
             const token = await getAccessTokenSilently({
